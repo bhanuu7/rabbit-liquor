@@ -1,13 +1,20 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
 import "./App.css";
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  return <div class="text-3xl">Hello world</div>;
+  return (
+    <BrowserRouter>
+      <TooltipProvider>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/home" element={<HomePage />} />
+        </Routes>
+      </TooltipProvider>
+    </BrowserRouter>
+  );
 }
 
 export default App;
