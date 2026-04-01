@@ -47,67 +47,58 @@ const HomePage = () => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <SideBar />
-        <div className="w-full flex flex-col">
-          <header className="flex items-center border-b sticky">
-            <SidebarTrigger />
-            <Header isHeaderOnly={true} />
-          </header>
-          <main className="container mx-auto px-4 py-8">
-            {/* Search and Filter */}
-            <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-full md:w-48">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category === "all" ? "All Categories" : category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+    <div className="w-full flex flex-col">
+      {/* Search and Filter */}
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category} value={category}>
+                {category === "all" ? "All Categories" : category}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-            {/* Products Grid */}
-            {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onReserve={() => {
-                      handleReserve(product.id);
-                    }}
-                    onNotifyMe={handleNotifyMe}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="flex min-h-[400px] flex-col items-center justify-center text-center">
-                <Wine className="mb-4 size-16 text-muted-foreground" />
-                <h3 className="mb-2 text-xl">No products found</h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your search or filter criteria
-                </p>
-              </div>
-            )}
-          </main>
+      {/* Products Grid */}
+      {filteredProducts.length > 0 ? (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onReserve={() => {
+                handleReserve(product.id);
+              }}
+              onNotifyMe={handleNotifyMe}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex min-h-[400px] flex-col items-center justify-center text-center">
+          <Wine className="mb-4 size-16 text-muted-foreground" />
+          <h3 className="mb-2 text-xl">No products found</h3>
+          <p className="text-muted-foreground">
+            Try adjusting your search or filter criteria
+          </p>
+        </div>
+      )}
 
-          {/* Dialogs // TO DO */}
-          {/* <ReservationDialog
+      {/* Dialogs // TO DO */}
+      {/* <ReservationDialog
             product={selectedProduct}
             open={reservationOpen}
             onClose={() => setReservationOpen(false)}
@@ -117,9 +108,7 @@ const HomePage = () => {
             open={notifyOpen}
             onClose={() => setNotifyOpen(false)}
           /> */}
-        </div>
-      </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
