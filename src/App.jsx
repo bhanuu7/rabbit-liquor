@@ -7,6 +7,7 @@ import { TooltipProvider } from "./components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppLayout from "./AppLayout";
+import CartPage from "./pages/CartPage";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ function App() {
               <Route element={<AppLayout />}>
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/inventory" element={<Inventory />} />
+                <Route path="/cart" element={<CartPage />} />
               </Route>
             </Routes>
           </StoreProvider>

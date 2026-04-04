@@ -1,11 +1,8 @@
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 
-const reserveRequest = async (productId) => {
-  const { data } = await axios.post("http://localhost:3000/reserve", {
-    // TO DO
-    productId,
-  });
+const reserveRequest = async (payload) => {
+  const { data } = await axios.post("http://localhost:3000/reserve", payload); // TO DO
   return data;
 };
 

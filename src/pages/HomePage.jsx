@@ -1,13 +1,9 @@
 import { useState } from "react";
-import Header from "@/components/Header";
-import SideBar from "@/components/SideBar";
 import { Wine, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
 import { getProducts } from "@/api/getProducts";
+import { useCart } from "@/context/CartContext";
 import { ProductCard } from "@/components/ProductCard";
-import { useInventorySocket } from "../hooks/useInventerySocket";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Select,
   SelectContent,
@@ -16,15 +12,14 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { reserveProduct } from "@/api/reserveProduct";
+import { useInventorySocket } from "@/hooks/useInventerySocket";
 const HomePage = () => {
-  const navigate = useNavigate();
-  const result = useInventorySocket();
-
+  const { addToCart } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
   const { data = [], isLoading, error } = getProducts();
   const { mutate, isPending } = reserveProduct();
+  useInventorySocket();
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [reservationOpen, setReservationOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
   const categories = ["all", ...new Set(data.map((p) => p.category))];
@@ -38,8 +33,8 @@ const HomePage = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleReserve = (id) => {
-    mutate(id);
+  const handleAddToCart = (product) => {
+    addToCart(product);
   };
 
   const handleNotifyMe = () => {
@@ -80,8 +75,8 @@ const HomePage = () => {
             <ProductCard
               key={product.id}
               product={product}
-              onReserve={() => {
-                handleReserve(product.id);
+              addToCart={() => {
+                handleAddToCart(product);
               }}
               onNotifyMe={handleNotifyMe}
             />

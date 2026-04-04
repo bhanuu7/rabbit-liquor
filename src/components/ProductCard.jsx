@@ -2,10 +2,13 @@ import { Card, CardContent, CardFooter } from "./ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Bell } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 
-export function ProductCard({ product, onReserve, onNotifyMe }) {
+export function ProductCard({ product, onNotifyMe }) {
   const isOutOfStock = product.stock_count === 0;
   const isLowStock = product.stock_count > 0 && product.stock_count <= 3;
+  const { getProductCount, removeFromCart, addToCart } = useCart();
+  const currentProductCount = getProductCount(product.id);
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
       <div className="relative aspect-[3/4] overflow-hidden bg-muted">
@@ -58,11 +61,31 @@ export function ProductCard({ product, onReserve, onNotifyMe }) {
             <Bell className="mr-2 size-4" />
             Notify When Available
           </Button>
-        ) : (
-          <Button className="w-full" onClick={() => onReserve(product)}>
+        ) : currentProductCount === 0 ? (
+          <Button className="w-full" onClick={() => addToCart(product)}>
             <ShoppingCart className="mr-2 size-4" />
-            Reserve for Pickup
+            Add To Cart
           </Button>
+        ) : (
+          <div className="w-full flex items-center justify-between rounded-md border px-2 py-1 bg-background">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => removeFromCart(product)}
+            >
+              -
+            </Button>
+
+            <span className="font-medium">{currentProductCount}</span>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => addToCart(product)}
+            >
+              +
+            </Button>
+          </div>
         )}
       </CardFooter>
     </Card>
