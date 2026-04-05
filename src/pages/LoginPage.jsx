@@ -19,7 +19,8 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   // 1. Initial Sign Up
-  const handleSignUp = async () => {
+  const handleSignUp = async (e) => {
+    e.preventDefault();
     if (!email || !password) return toast.error("Please fill in all fields");
 
     setIsLoading(true);
@@ -80,7 +81,7 @@ export default function LoginPage() {
   };
 
   // 3. Standard Login
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
