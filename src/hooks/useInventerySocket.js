@@ -5,18 +5,11 @@ import { useQueryClient } from "@tanstack/react-query";
 export const useInventorySocket = () => {
   const queryClient = useQueryClient();
 
-  console.log("socket instance in hook", socket);
   useEffect(() => {
     // 🔥 Ensure socket is connected
     if (!socket.connected) {
       socket.connect();
     }
-
-    // 🔥 DEBUG: Listen to ALL events
-    socket.onAny((event, ...args) => {
-      console.log("🔥 SOCKET EVENT:", event, args);
-    });
-
     const handleUpdate = (data) => {
       const { productId, stock_count } = data;
       // 🧠 Safe cache update

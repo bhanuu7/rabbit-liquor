@@ -20,7 +20,6 @@ const HomePage = () => {
   const { mutate, isPending } = reserveProduct();
   useInventorySocket();
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [reservationOpen, setReservationOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
   const categories = ["all", ...new Set(data.map((p) => p.category))];
 

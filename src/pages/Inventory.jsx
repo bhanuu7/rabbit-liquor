@@ -47,9 +47,15 @@ import {
   Trash2,
   Save,
 } from "lucide-react";
+import { getProducts } from "@/api/getProducts";
+import { getOrders } from "@/api/getOrders";
+import { OrderDetailsDialog } from "@/components/OrderDetailsDialog";
+import { getOrderDetails } from "@/api/getOrderDetails";
 
 export default function Inventory() {
   const navigate = useNavigate();
+  const { data: productsData = [], isLoading } = getProducts();
+  const { data: ordersData = [] } = getOrders();
   const {
     products,
     reservations,
@@ -60,7 +66,9 @@ export default function Inventory() {
     updateProductStock,
   } = useStore();
   const [editingProduct, setEditingProduct] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [orderDetailsDialog, setOrderDetailsDialog] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "",
     category: "",
@@ -72,6 +80,13 @@ export default function Inventory() {
     volume: "",
     origin: "",
   });
+
+  const outOfStockItems = Object.values(productsData).filter(
+    (product) => product.stock_count === 0,
+  );
+  const runningOutOfStockItems = Object.values(productsData).filter(
+    (product) => product.stock_count <= 5 && product.stock_count > 0,
+  );
 
   const handleUpdateStock = (productId, newStock) => {
     updateProductStock(productId, newStock);
@@ -118,6 +133,36 @@ export default function Inventory() {
     toast.success("Product added successfully");
   };
 
+  const handleCloseOrderDetailsDialog = () => {
+    setOrderDetailsDialog(false);
+    setSelectedOrderId(null);
+  };
+
+  const FormattedBadge = ({ status }) => {
+    if (status === "picked_up")
+      return (
+        <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">
+          Complete
+        </Badge>
+      );
+    else if (status === "order_placed")
+      return (
+        <Badge className="bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+          Active
+        </Badge>
+      );
+    return (
+      <Badge className="bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300">
+        Cancelled
+      </Badge>
+    );
+  };
+
+  const handleOrderDetailsDialogClick = (orderId) => {
+    setSelectedOrderId(orderId);
+    setOrderDetailsDialog(!orderDetailsDialog);
+  };
+
   const pendingReservations = reservations.filter(
     (r) => r.status === "pending",
   );
@@ -131,28 +176,40 @@ export default function Inventory() {
   return (
     <div className="min-h-screen bg-background">
       {/* Stats */}
-      <div className="mb-8 grid gap-4 md:grid-cols-3">
+      <div className="mb-8 grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm">Total Products</CardTitle>
             <Package className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl">{products.length}</div>
+            <div className="text-2xl">{productsData.length}</div>
             <p className="text-xs text-muted-foreground">
-              {products.filter((p) => p.stock === 0).length} out of stock
+              {outOfStockItems.length} out of stock
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm">Pending Reservations</CardTitle>
+            <CardTitle className="text-sm">Running Out</CardTitle>
+            <Package className="size-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl">{runningOutOfStockItems.length}</div>
+            <p className="text-xs text-muted-foreground">
+              {runningOutOfStockItems.length} might go out of stock
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm">Reservations</CardTitle>
             <ShoppingBag className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl">{pendingReservations.length}</div>
+            <div className="text-2xl">{ordersData.length}</div>
             <p className="text-xs text-muted-foreground">
-              {reservations.length} total reservations
+              {ordersData.length} total reservations
             </p>
           </CardContent>
         </Card>
@@ -163,6 +220,7 @@ export default function Inventory() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl">{notifyRequests.length}</div>
+            {/* TO DO add original data from backend*/}
             <p className="text-xs text-muted-foreground">
               Customers waiting for restock
             </p>
@@ -335,7 +393,7 @@ export default function Inventory() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {products.map((product) => (
+                  {productsData.map((product) => (
                     <TableRow key={product.id}>
                       <TableCell>
                         {editingProduct?.id === product.id ? (
@@ -351,15 +409,15 @@ export default function Inventory() {
                         ) : (
                           <div className="flex items-center gap-3">
                             <img
-                              src={product.image}
-                              alt={product.name}
+                              src={product.image_url}
+                              alt={product.item_name}
                               className="size-10 rounded object-cover"
                             />
-                            <span>{product.name}</span>
+                            <span>{product.item_name}</span>
                           </div>
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-left">
                         {editingProduct?.id === product.id ? (
                           <Input
                             value={editingProduct.category}
@@ -374,7 +432,7 @@ export default function Inventory() {
                           product.category
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-left">
                         {editingProduct?.id === product.id ? (
                           <Input
                             type="number"
@@ -388,10 +446,10 @@ export default function Inventory() {
                             }
                           />
                         ) : (
-                          `$${product.price.toFixed(2)}`
+                          `$${product.price}`
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-left">
                         {editingProduct?.id === product.id ? (
                           <Input
                             type="number"
@@ -408,14 +466,14 @@ export default function Inventory() {
                           <div className="flex items-center gap-2">
                             <Badge
                               variant={
-                                product.stock === 0
+                                product.stock_count === 0
                                   ? "destructive"
-                                  : product.stock <= 3
+                                  : product.stock_count <= 3
                                     ? "secondary"
                                     : "default"
                               }
                             >
-                              {product.stock}
+                              {product.stock_count}
                             </Badge>
                           </div>
                         )}
@@ -469,16 +527,17 @@ export default function Inventory() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead>Customer</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead>User Name</TableHead>
+                    <TableHead>Customer Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Total Amount</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {reservations.length === 0 ? (
+                  {ordersData.length === 0 ? (
                     <TableRow>
                       <TableCell
                         colSpan={6}
@@ -488,40 +547,40 @@ export default function Inventory() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    reservations.map((reservation) => {
-                      const product = products.find(
+                    ordersData.map((reservation) => {
+                      const product = productsData.find(
                         (p) => p.id === reservation.productId,
                       );
                       return (
-                        <TableRow key={reservation.id}>
-                          <TableCell>{product?.name || "Unknown"}</TableCell>
-                          <TableCell>{reservation.customerName}</TableCell>
-                          <TableCell>
-                            <div className="text-sm">
-                              <div>{reservation.customerEmail}</div>
-                              <div className="text-muted-foreground">
-                                {reservation.customerPhone}
-                              </div>
-                            </div>
+                        <TableRow
+                          key={reservation.id}
+                          className="cursor-pointer"
+                          onClick={() =>
+                            handleOrderDetailsDialogClick(reservation.id)
+                          }
+                        >
+                          <TableCell className="text-left">
+                            {reservation.user_name}
                           </TableCell>
-                          <TableCell>{reservation.quantity}</TableCell>
-                          <TableCell>
+                          <TableCell className="text-left">
+                            {reservation.customer_name}
+                          </TableCell>
+                          <TableCell className="text-left">
+                            {reservation.email}
+                          </TableCell>
+                          <TableCell className="text-left">
+                            {reservation.phone}
+                          </TableCell>
+                          <TableCell className="text-left">
+                            {reservation.total_amount}
+                          </TableCell>
+                          <TableCell className="text-left">
+                            <FormattedBadge status={reservation.status} />
+                          </TableCell>
+                          <TableCell className="text-left">
                             {new Date(
-                              reservation.timestamp,
+                              reservation.created_at,
                             ).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                reservation.status === "completed"
-                                  ? "default"
-                                  : reservation.status === "cancelled"
-                                    ? "destructive"
-                                    : "secondary"
-                              }
-                            >
-                              {reservation.status}
-                            </Badge>
                           </TableCell>
                         </TableRow>
                       );
@@ -559,7 +618,7 @@ export default function Inventory() {
                     </TableRow>
                   ) : (
                     notifyRequests.map((request) => {
-                      const product = products.find(
+                      const product = productsData.find(
                         (p) => p.id === request.productId,
                       );
                       return (
@@ -588,6 +647,12 @@ export default function Inventory() {
           </Card>
         </TabsContent>
       </Tabs>
+      <OrderDetailsDialog
+        key={selectedOrderId}
+        open={orderDetailsDialog}
+        onClose={handleCloseOrderDetailsDialog}
+        orderId={selectedOrderId}
+      />
     </div>
   );
 }

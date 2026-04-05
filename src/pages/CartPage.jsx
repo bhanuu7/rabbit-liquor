@@ -13,7 +13,6 @@ import {
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
-import { Badge } from "../components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -36,8 +35,7 @@ import { reserveProduct } from "@/api/reserveProduct";
 function CartPage() {
   const navigate = useNavigate();
   const { mutate, isPending } = reserveProduct();
-  const { cartProducts, addToCart, removeFromCart } = useCart();
-  const { addReservation } = useStore(); // TO DO
+  const { cartProducts, addToCart, removeFromCart, clearCart } = useCart();
   const [checkoutOpen, setCheckoutOpen] = useState(false); // TO DO
   const [formData, setFormData] = useState({
     name: "",
@@ -51,7 +49,6 @@ function CartPage() {
   const total = subtotal + tax;
 
   const handleCheckout = (e) => {
-    console.log("handle checkout clicked");
     e.preventDefault();
 
     const items = Object.values(cartProducts).map((item) => ({

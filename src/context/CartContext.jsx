@@ -17,6 +17,10 @@ export function CartProvider({ children }) {
     });
   };
 
+  const clearCart = () => {
+    setCartProducts([]);
+  };
+
   const removeFromCart = (product) => {
     setCartProducts((prev) => {
       const existingItem = prev[product.id];
@@ -65,6 +69,7 @@ export function CartProvider({ children }) {
         cartProducts,
         getCartCount,
         getProductCount,
+        clearCart,
       }}
     >
       {children}
