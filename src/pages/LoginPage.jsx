@@ -93,11 +93,12 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error("Login failed:", error);
-      if (error.name === "UserNotConfirmedException") {
-        setShowVerification(true);
-        toast.error("Please verify your email to continue.");
+      if (error.name === "UserAlreadyAuthenticatedException") {
+        // Logic: If they are already logged in, just send them home!
+        console.log("User already has a session. Redirecting...");
+        navigate("/home");
       } else {
-        toast.error(error.message || "Invalid email or password");
+        console.error("Login failed:", error);
       }
     } finally {
       setIsLoading(false);
