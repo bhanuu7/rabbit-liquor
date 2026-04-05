@@ -81,6 +81,7 @@ export default function LoginPage() {
 
   // 3. Standard Login
   const handleLogin = async () => {
+    e.preventDefault();
     setIsLoading(true);
     try {
       const { isSignedIn } = await signIn({
