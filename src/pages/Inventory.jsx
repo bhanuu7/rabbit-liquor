@@ -46,11 +46,13 @@ import {
   Pencil,
   Trash2,
   Save,
+  TriangleAlert,
 } from "lucide-react";
 import { getProducts } from "@/api/getProducts";
 import { getOrders } from "@/api/getOrders";
 import { OrderDetailsDialog } from "@/components/OrderDetailsDialog";
 import { getOrderDetails } from "@/api/getOrderDetails";
+import { updateProduct as updateProductAPI } from "@/api/updateProducts";
 
 export default function Inventory() {
   const navigate = useNavigate();
@@ -65,6 +67,7 @@ export default function Inventory() {
     addProduct,
     updateProductStock,
   } = useStore();
+  const { mutate: updateProductsFn } = updateProductAPI();
   const [editingProduct, setEditingProduct] = useState(null);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -98,10 +101,20 @@ export default function Inventory() {
   };
 
   const handleSaveEdit = () => {
-    if (editingProduct) {
-      updateProduct(editingProduct.id, editingProduct);
+    try {
+      if (!editingProduct) return;
+
+      // const res = await updateProductApi(editingProduct);
+
+      // Optional: update local state/store
+      updateProductsFn(editingProduct);
+      // updateProduct(editingProduct.id, res.product);
+
       setEditingProduct(null);
       toast.success("Product updated successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update product");
     }
   };
 
@@ -192,7 +205,7 @@ export default function Inventory() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm">Running Out</CardTitle>
-            <Package className="size-4 text-muted-foreground" />
+            <TriangleAlert className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl">{runningOutOfStockItems.length}</div>
@@ -398,11 +411,11 @@ export default function Inventory() {
                       <TableCell>
                         {editingProduct?.id === product.id ? (
                           <Input
-                            value={editingProduct.name}
+                            value={editingProduct.item_name}
                             onChange={(e) =>
                               setEditingProduct({
                                 ...editingProduct,
-                                name: e.target.value,
+                                item_name: e.target.value,
                               })
                             }
                           />
@@ -453,11 +466,11 @@ export default function Inventory() {
                         {editingProduct?.id === product.id ? (
                           <Input
                             type="number"
-                            value={editingProduct.stock}
+                            value={editingProduct.stock_count}
                             onChange={(e) =>
                               setEditingProduct({
                                 ...editingProduct,
-                                stock: parseInt(e.target.value) || 0,
+                                stock_count: parseInt(e.target.value) || 0,
                               })
                             }
                             className="w-20"

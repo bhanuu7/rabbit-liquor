@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppLayout from "./AppLayout";
 import CartPage from "./pages/CartPage";
 import { Amplify } from "aws-amplify";
+import OrdersPage from "./pages/OrdersPage";
 
 Amplify.configure({
   Auth: {
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/orders" element={<OrdersPage />} />
               </Route>
             </Routes>
           </StoreProvider>

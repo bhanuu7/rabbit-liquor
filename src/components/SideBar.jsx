@@ -1,4 +1,13 @@
-import { Home, Beer, Settings, Users, LogOut } from "lucide-react";
+import {
+  Home,
+  Beer,
+  Settings,
+  Users,
+  LogOut,
+  PackageCheck,
+  Warehouse,
+  BottleWine,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -15,10 +24,9 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 const navItems = [
-  { title: "Dashboard", url: "/home", icon: Home },
-  { title: "Inventory", url: "/inventory", icon: Beer },
-  { title: "Customers", url: "/customers", icon: Users },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Products", url: "/home", icon: BottleWine },
+  { title: "Inventory", url: "/inventory", icon: Warehouse },
+  { title: "orders", url: "/orders", icon: PackageCheck },
 ];
 
 export default function AppSidebar() {
