@@ -20,8 +20,10 @@ export default function LoginPage() {
 
   // 1. Initial Sign Up
   const handleSignUp = async (e) => {
-    e.preventDefault();
-    if (!email || !password) return toast.error("Please fill in all fields");
+    if (!email || !password)
+      return toast.error("Please fill in all fields", {
+        position: "bottom-right",
+      });
 
     setIsLoading(true);
     try {
@@ -30,11 +32,9 @@ export default function LoginPage() {
         password,
         options: {
           userAttributes: { email },
-          // If your Cognito pool is configured for it, this allows auto-login after OTP
           autoSignIn: true,
         },
       });
-
       if (nextStep.signUpStep === "CONFIRM_SIGN_UP") {
         toast.success("Verification code sent to your email!");
         setShowVerification(true);
@@ -85,7 +85,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const { isSignedIn } = await signIn({
-        email,
+        username: email,
         password,
       });
       if (isSignedIn) {

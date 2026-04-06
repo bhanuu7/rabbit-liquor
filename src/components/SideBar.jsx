@@ -10,6 +10,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { signOut } from "aws-amplify/auth";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const navItems = [
   { title: "Dashboard", url: "/home", icon: Home },
@@ -19,6 +22,12 @@ const navItems = [
 ];
 
 export default function AppSidebar() {
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    await signOut();
+    toast.success("Logged out successfully", { position: "bottom-right" });
+    navigate("/");
+  };
   return (
     <Sidebar collapsible="icon">
       {/* <SidebarHeader className="flex items-center justify-center py-4">
@@ -50,7 +59,7 @@ export default function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton className="text-red-500">
               <LogOut />
-              <span>Logout</span>
+              <span onClick={handleLogout}>Logout</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
