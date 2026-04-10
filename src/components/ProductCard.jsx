@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ShoppingCart, Bell } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import BottleSVG, { CATEGORY_FALLBACK } from "@/components/BottleSVG";
-import "./ProductCard.css";
 
 export function ProductCard({ product, onNotifyMe }) {
   const isOutOfStock = product.stock_count === 0;
@@ -13,18 +12,18 @@ export function ProductCard({ product, onNotifyMe }) {
   const fallback = CATEGORY_FALLBACK[product.category] || CATEGORY_FALLBACK.default;
 
   return (
-    <div className="rl-pc">
+    <div className="group bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-xl overflow-hidden flex flex-col transition-all duration-[280ms] ease hover:border-[rgba(201,168,76,0.5)] hover:-translate-y-1.5 hover:shadow-[0_18px_44px_rgba(201,168,76,0.1)]">
       {/* Image */}
-      <div className="rl-pc__img">
+      <div className="relative aspect-[4/3] overflow-hidden bg-[#0d0d0d]">
         {!imgError && product.image_url ? (
           <img
             src={product.image_url}
             alt={product.item_name}
-            className="rl-pc__photo"
+            className="w-full h-full object-cover transition-transform duration-[350ms] ease block group-hover:scale-105"
             onError={() => setImgError(true)}
           />
         ) : (
-          <div className="rl-pc__bottle-fallback">
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#131313] to-[#0d0d0d]">
             <BottleSVG
               color={fallback.color}
               label={product.category.toUpperCase()}
@@ -32,34 +31,34 @@ export function ProductCard({ product, onNotifyMe }) {
             />
           </div>
         )}
-        <span className="rl-pc__cat">{product.category}</span>
+        <span className="absolute top-3 left-3 bg-[rgba(201,168,76,0.12)] border border-[rgba(201,168,76,0.35)] text-gold text-[10px] tracking-[1.2px] uppercase py-[3px] px-2.5 rounded-full font-[Helvetica_Neue,sans-serif]">{product.category}</span>
         {isOutOfStock && (
-          <div className="rl-pc__oos-overlay">
-            <span>Out of Stock</span>
+          <div className="absolute inset-0 bg-[rgba(0,0,0,0.65)] flex items-center justify-center">
+            <span className="text-text-main text-xs font-semibold bg-[rgba(160,30,30,0.9)] border border-[rgba(220,60,60,0.5)] py-1.5 px-[18px] rounded-md tracking-[1px] uppercase">Out of Stock</span>
           </div>
         )}
         {isLowStock && !isOutOfStock && (
-          <span className="rl-pc__low-badge">Only {product.stock_count} left</span>
+          <span className="absolute top-3 right-3 bg-[rgba(201,168,76,0.15)] border border-[rgba(201,168,76,0.5)] text-gold text-[10px] py-[3px] px-2.5 rounded-full font-[Helvetica_Neue,sans-serif]">Only {product.stock_count} left</span>
         )}
       </div>
 
       {/* Body */}
-      <div className="rl-pc__body">
-        <h3 className="rl-pc__name">{product.item_name}</h3>
-        <p className="rl-pc__desc">{product.description}</p>
-        <div className="rl-pc__meta">
+      <div className="px-3 pt-2.5 pb-1.5 flex-1 flex flex-col gap-1">
+        <h3 className="text-[13px] font-semibold text-text-main font-serif-app leading-[1.3] line-clamp-2">{product.item_name}</h3>
+        <p className="text-[11px] text-text-dim leading-[1.55] line-clamp-2">{product.description}</p>
+        <div className="flex gap-[5px] text-[10px] text-[#505050]">
           <span>{product.volume}</span>
           <span>·</span>
           <span>{product.alcoholContent} ABV</span>
         </div>
-        <div className="rl-pc__price">${product.price}</div>
+        <div className="text-lg font-bold text-gold font-serif-app leading-none mt-0.5">${product.price}</div>
       </div>
 
       {/* Footer CTA */}
-      <div className="rl-pc__footer">
+      <div className="px-3 pt-2 pb-3">
         {isOutOfStock ? (
           <button
-            className="rl-pc__btn rl-pc__btn--outline"
+            className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 text-xs font-semibold tracking-[0.3px] rounded-md cursor-pointer transition-all duration-[280ms] border border-[rgba(201,168,76,0.4)] bg-transparent text-gold font-[Helvetica_Neue,Segoe_UI,sans-serif] hover:bg-[rgba(201,168,76,0.08)] hover:border-gold"
             onClick={() => onNotifyMe?.(product)}
           >
             <Bell size={14} />
@@ -67,17 +66,17 @@ export function ProductCard({ product, onNotifyMe }) {
           </button>
         ) : currentProductCount === 0 ? (
           <button
-            className="rl-pc__btn rl-pc__btn--gold"
+            className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 text-xs font-semibold tracking-[0.3px] rounded-md cursor-pointer transition-all duration-[280ms] border-none bg-gradient-to-br from-gold to-gold-dark text-black font-[Helvetica_Neue,Segoe_UI,sans-serif] hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:shadow-[0_4px_16px_rgba(201,168,76,0.3)]"
             onClick={() => addToCart(product)}
           >
             <ShoppingCart size={14} />
             Add To Cart
           </button>
         ) : (
-          <div className="rl-pc__qty">
-            <button className="rl-pc__qty-btn" onClick={() => removeFromCart(product)}>−</button>
-            <span className="rl-pc__qty-count">{currentProductCount}</span>
-            <button className="rl-pc__qty-btn" onClick={() => addToCart(product)}>+</button>
+          <div className="flex items-center justify-between border border-[rgba(201,168,76,0.3)] rounded-md overflow-hidden">
+            <button className="bg-transparent border-none text-gold w-[34px] h-8 text-lg cursor-pointer transition-colors duration-200 flex items-center justify-center font-[Helvetica_Neue,sans-serif] leading-none hover:bg-[rgba(201,168,76,0.1)]" onClick={() => removeFromCart(product)}>−</button>
+            <span className="text-sm font-semibold text-text-main min-w-[30px] text-center">{currentProductCount}</span>
+            <button className="bg-transparent border-none text-gold w-[34px] h-8 text-lg cursor-pointer transition-colors duration-200 flex items-center justify-center font-[Helvetica_Neue,sans-serif] leading-none hover:bg-[rgba(201,168,76,0.1)]" onClick={() => addToCart(product)}>+</button>
           </div>
         )}
       </div>

@@ -1,5 +1,4 @@
 import { useId } from 'react'
-import './WhiskeySpinner.css'
 
 /**
  * WhiskeySpinner (Beer Glass Fill)
@@ -9,12 +8,12 @@ import './WhiskeySpinner.css'
  */
 export default function WhiskeySpinner({ size = 120, label = 'Loading…' }) {
   const uid        = useId().replace(/:/g, 'x')
-  const clipId     = `wsp-clip-${uid}`       // full clip (sides + top + bottom) — keeps beer inside
-  const clipFoamId = `wsp-foam-clip-${uid}`  // open-top clip (sides + bottom only) — foam can overflow
+  const clipId     = `wsp-clip-${uid}`
+  const clipFoamId = `wsp-foam-clip-${uid}`
   const gradBeer   = `wsp-beer-${uid}`
 
   return (
-    <div className="wsp-wrap">
+    <div className="inline-flex flex-col items-center gap-3">
       <svg
         viewBox="0 -22 100 214"
         width={size}
@@ -41,20 +40,20 @@ export default function WhiskeySpinner({ size = 120, label = 'Loading…' }) {
 
         {/* Beer fill — full clip keeps liquid strictly inside the glass */}
         <g clipPath={`url(#${clipId})`}>
-          <rect className="wsp-liquid" x="0" y="20" width="100" height="132" fill={`url(#${gradBeer})`} />
-          <rect className="wsp-liquid" x="16" y="20" width="9"   height="132" fill="rgba(255,215,80,0.22)" rx="4.5" />
-          <rect className="wsp-liquid" x="28" y="20" width="4"   height="132" fill="rgba(255,215,80,0.10)" rx="2" />
-          <circle className="wsp-b wsp-b1" cx="38" cy="146" r="2.4" fill="rgba(255,205,70,0.65)" />
-          <circle className="wsp-b wsp-b2" cx="60" cy="142" r="1.8" fill="rgba(255,205,70,0.60)" />
-          <circle className="wsp-b wsp-b3" cx="50" cy="149" r="2.2" fill="rgba(255,205,70,0.55)" />
-          <circle className="wsp-b wsp-b4" cx="33" cy="144" r="1.5" fill="rgba(255,205,70,0.50)" />
-          <circle className="wsp-b wsp-b5" cx="68" cy="147" r="1.8" fill="rgba(255,205,70,0.55)" />
+          <rect className="[transform-box:fill-box] origin-bottom animate-wsp-fill" x="0" y="20" width="100" height="132" fill={`url(#${gradBeer})`} />
+          <rect className="[transform-box:fill-box] origin-bottom animate-wsp-fill" x="16" y="20" width="9"   height="132" fill="rgba(255,215,80,0.22)" rx="4.5" />
+          <rect className="[transform-box:fill-box] origin-bottom animate-wsp-fill" x="28" y="20" width="4"   height="132" fill="rgba(255,215,80,0.10)" rx="2" />
+          <circle className="animate-wsp-bubble [animation-delay:0s] [animation-duration:1.8s]" cx="38" cy="146" r="2.4" fill="rgba(255,205,70,0.65)" />
+          <circle className="animate-wsp-bubble [animation-delay:0.38s] [animation-duration:2s]" cx="60" cy="142" r="1.8" fill="rgba(255,205,70,0.60)" />
+          <circle className="animate-wsp-bubble [animation-delay:0.75s] [animation-duration:1.7s]" cx="50" cy="149" r="2.2" fill="rgba(255,205,70,0.55)" />
+          <circle className="animate-wsp-bubble [animation-delay:1.15s] [animation-duration:2.2s]" cx="33" cy="144" r="1.5" fill="rgba(255,205,70,0.50)" />
+          <circle className="animate-wsp-bubble [animation-delay:0.55s] [animation-duration:1.6s]" cx="68" cy="147" r="1.8" fill="rgba(255,205,70,0.55)" />
         </g>
 
         {/* Foam — open-top clip: side walls + bottom clip but NO top cap
             so foam proudly overflows above the rim once the glass is full */}
         <g clipPath={`url(#${clipFoamId})`}>
-          <g className="wsp-foam-group">
+          <g className="[transform-box:fill-box] origin-bottom animate-wsp-foam">
             <ellipse cx="50" cy="44" rx="40" ry="18" fill="rgba(255,253,242,0.98)" />
             <ellipse cx="26" cy="31" rx="15" ry="12" fill="rgba(255,252,238,0.96)" />
             <ellipse cx="50" cy="27" rx="17" ry="13" fill="rgba(255,251,236,0.97)" />
@@ -82,7 +81,7 @@ export default function WhiskeySpinner({ size = 120, label = 'Loading…' }) {
         <path d="M 19,22 C 22,55 25,76 27,100" fill="none" stroke="rgba(255,255,255,0.13)" strokeWidth="3" strokeLinecap="round" />
       </svg>
 
-      {label && <p className="wsp-label">{label}</p>}
+      {label && <p className="font-sans-app text-[0.72rem] tracking-[0.2em] uppercase text-gold m-0 animate-wsp-pulse">{label}</p>}
     </div>
   )
 }

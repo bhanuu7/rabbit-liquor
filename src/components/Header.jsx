@@ -16,16 +16,16 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
   const { getCartCount } = useCart();
   return (
-    <div className="rl-header w-full">
+    <div className="w-full">
       <div className="flex items-center justify-between px-4">
         <div className="flex items-center gap-2 h-16">
-          <Wine className="size-7 rl-brand-icon" />
-          <h1 className="rl-brand-title">Rabbit Liquor</h1>
+          <Wine className="size-7 text-gold" />
+          <h1 className="text-gold font-serif-app text-[17px] font-bold tracking-[0.8px]">Rabbit Liquor</h1>
         </div>
 
         {/* Right Side: Profile Dropdown */}
         <div className="flex items-center gap-x-4">
-          <span className="rl-cart-icon">
+          <span className="text-[#888] cursor-pointer transition-colors duration-[280ms] hover:text-gold">
             <CartIcon count={getCartCount()} />
           </span>
           <div className="flex items-center gap-4">

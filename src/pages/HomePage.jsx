@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import './HomePage.css'
 import designerImg from '../assets/designer2.png'
 import BottleSVG, { CATEGORY_FALLBACK } from '@/components/BottleSVG'
 import { products as REAL_PRODUCTS } from '@/utils'
@@ -221,48 +220,48 @@ function Navbar({ onNavigate, currentPage }) {
   const goHome = (hash = '') => { onNavigate('home'); setTimeout(() => { if (hash) document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' }) }, 50) }
 
   return (
-    <nav className="rl-nav">
+    <nav className="sticky top-0 z-[1000] grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-7 h-[70px] bg-[rgba(6,6,6,0.96)] backdrop-blur-[24px] border-b border-[rgba(201,168,76,0.18)] max-lg:px-5 max-lg:h-16 max-lg:gap-2.5">
       {/* LEFT */}
-      <div className="rl-nav__left">
-        <button onClick={() => goHome()} className="rl-nav__brand">
+      <div className="flex items-center gap-7 min-w-0">
+        <button onClick={() => goHome()} className="flex items-center gap-2.5 no-underline shrink-0 bg-transparent border-none cursor-pointer p-0 font-sans-app">
           <RabbitLogo size={40} />
-          <span className="rl-nav__brand-name">Rabbit Liquor</span>
+          <span className="text-[17px] font-bold text-gold font-serif-app tracking-[0.8px] whitespace-nowrap max-[480px]:text-sm">Rabbit Liquor</span>
         </button>
-        <div className={`rl-nav__links${menuOpen ? ' open' : ''}`}>
-          <button onClick={() => { goHome(); setMenuOpen(false) }} className={`rl-nav__link${currentPage === 'home' ? ' active' : ''}`}>Home</button>
-          <button onClick={() => { goHome('#range'); setMenuOpen(false) }} className="rl-nav__link">Reserve</button>
-          <button onClick={() => { onNavigate('story'); setMenuOpen(false) }} className={`rl-nav__link${currentPage === 'story' ? ' active' : ''}`}>About Us</button>
+        <div className={`flex items-center gap-1 max-lg:hidden max-lg:fixed max-lg:top-16 max-lg:left-0 max-lg:right-0 max-lg:bg-[rgba(6,6,6,0.98)] max-lg:p-[18px_24px] max-lg:flex-col max-lg:items-start max-lg:border-b max-lg:border-[rgba(201,168,76,0.18)] max-lg:z-[999] ${menuOpen ? 'max-lg:!flex' : ''}`}>
+          <button onClick={() => { goHome(); setMenuOpen(false) }} className={`text-[#888] no-underline text-[13px] tracking-[1px] uppercase py-1.5 px-[13px] rounded-md transition-all duration-[280ms] bg-transparent border-none cursor-pointer font-sans-app hover:text-gold hover:bg-[rgba(201,168,76,0.07)] ${currentPage === 'home' ? 'text-gold bg-[rgba(201,168,76,0.07)]' : ''}`}>Home</button>
+          <button onClick={() => { goHome('#range'); setMenuOpen(false) }} className="text-[#888] no-underline text-[13px] tracking-[1px] uppercase py-1.5 px-[13px] rounded-md transition-all duration-[280ms] bg-transparent border-none cursor-pointer font-sans-app hover:text-gold hover:bg-[rgba(201,168,76,0.07)]">Reserve</button>
+          <button onClick={() => { onNavigate('story'); setMenuOpen(false) }} className={`text-[#888] no-underline text-[13px] tracking-[1px] uppercase py-1.5 px-[13px] rounded-md transition-all duration-[280ms] bg-transparent border-none cursor-pointer font-sans-app hover:text-gold hover:bg-[rgba(201,168,76,0.07)] ${currentPage === 'story' ? 'text-gold bg-[rgba(201,168,76,0.07)]' : ''}`}>About Us</button>
         </div>
       </div>
 
       {/* CENTER */}
-      <div className="rl-nav__center">
-        <div className="rl-search">
-          <svg className="rl-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <div className="flex justify-center max-lg:hidden">
+        <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-full py-2 px-[18px] w-[300px] transition-all duration-[280ms] focus-within:border-gold focus-within:bg-[rgba(255,255,255,0.06)]">
+          <svg className="w-[15px] h-[15px] text-gold shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
-          <input type="text" placeholder="Search spirits, wines…" className="rl-search__input" aria-label="Search"/>
+          <input type="text" placeholder="Search spirits, wines…" className="bg-transparent border-none outline-none text-text-main text-[13px] font-sans-app w-full placeholder:text-text-dim" aria-label="Search"/>
         </div>
       </div>
 
       {/* RIGHT */}
-      <div className="rl-nav__right">
-        <button className="rl-nav__cart" aria-label="Cart" onClick={() => navigate('/cart')}>
+      <div className="flex items-center justify-end gap-2.5">
+        <button className="relative bg-transparent border border-[rgba(201,168,76,0.28)] text-gold w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-[280ms] shrink-0 hover:bg-[rgba(201,168,76,0.1)] hover:border-gold" aria-label="Cart" onClick={() => navigate('/cart')}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
             <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
           </svg>
-          {cartCount > 0 && <span className="rl-nav__cart-count">{cartCount}</span>}
+          {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-gold text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{cartCount}</span>}
         </button>
-        <button className="rl-btn rl-btn--outline" onClick={() => navigate('/')}>Sign In</button>
-        <button className="rl-btn rl-btn--gold" onClick={() => navigate('/')}>Sign Up</button>
+        <button className="inline-flex items-center justify-center gap-1.5 py-[9px] px-5 text-[13px] font-semibold tracking-[0.6px] rounded-md cursor-pointer transition-all duration-[280ms] whitespace-nowrap border border-gold bg-transparent text-gold hover:bg-[rgba(201,168,76,0.08)] hover:-translate-y-px" onClick={() => navigate('/')}>Sign In</button>
+        <button className="inline-flex items-center justify-center gap-1.5 py-[9px] px-5 text-[13px] font-semibold tracking-[0.6px] rounded-md cursor-pointer transition-all duration-[280ms] whitespace-nowrap border-none bg-gradient-to-br from-gold to-gold-dark text-black hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:-translate-y-px hover:shadow-[0_6px_20px_rgba(201,168,76,0.3)]" onClick={() => navigate('/')}>Sign Up</button>
         <button
-          className={`rl-nav__hamburger${menuOpen ? ' active' : ''}`}
+          className={`hidden max-lg:flex flex-col gap-[5px] bg-transparent border-none cursor-pointer p-1 ${menuOpen ? 'active' : ''}`}
           onClick={() => setMenuOpen(o => !o)}
           aria-label="Toggle menu"
           aria-expanded={menuOpen}
         >
-          <span/><span/><span/>
+          <span className="block w-[22px] h-0.5 bg-gold rounded-sm transition-all duration-300"/><span className="block w-[22px] h-0.5 bg-gold rounded-sm transition-all duration-300"/><span className="block w-[22px] h-0.5 bg-gold rounded-sm transition-all duration-300"/>
         </button>
       </div>
     </nav>
@@ -278,45 +277,45 @@ function HeroSection() {
   const scrollToRange = () => document.getElementById('range')?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <section className="rl-hero" id="home">
-      <div className="rl-hero-splash-wrap" aria-hidden="true">
+    <section className="relative min-h-[56vh] flex items-center overflow-hidden bg-black border-b border-[rgba(201,168,76,0.18)] max-md:min-h-auto max-md:items-start" id="home">
+      <div className="absolute right-[12%] top-1/2 -translate-y-1/2 w-[min(48vw,420px)] pointer-events-none z-[2] animate-rl-float max-lg:opacity-100 max-lg:right-[8%] max-lg:w-[min(40vw,420px)] max-md:opacity-90 max-md:right-[4%] max-md:w-[min(40vw,320px)] max-[480px]:opacity-80 max-[480px]:right-0 max-[480px]:w-[min(40vw,240px)]" aria-hidden="true">
         <img
           src={designerImg}
           alt="Premium Whiskey Splash"
-          className="rl-hero-splash-img"
+          className="w-full h-auto block"
         />
       </div>
 
-      <div className="rl-hero__content">
-        <div className="rl-hero__pill">
-          <span className="rl-hero__pill-dot"/>
+      <div className="relative z-10 py-[52px] px-16 max-w-[580px] max-lg:py-10 max-lg:px-7 max-md:py-[52px] max-md:px-[22px] max-md:pb-9 max-md:max-w-full">
+        <div className="inline-flex items-center gap-2 bg-[rgba(201,168,76,0.08)] border border-[rgba(201,168,76,0.28)] rounded-full py-[5px] px-3.5 text-[11px] text-gold tracking-[0.5px] mb-5">
+          <span className="w-1.5 h-1.5 rounded-full bg-gold animate-rl-pulse"/>
           <span>500+ Premium Labels In Stock</span>
         </div>
-        <h1 className="rl-hero__title">
+        <h1 className="text-[clamp(32px,4.2vw,58px)] font-bold leading-[1.1] text-white font-serif-app mb-4 max-md:text-[30px] max-[480px]:text-2xl">
           The Finest<br/>
-          <em className="rl-gold">Spirits, Available.</em>
+          <em className="text-gold italic">Spirits, Available.</em>
         </h1>
-        <p className="rl-hero__desc">
+        <p className="text-sm text-[#888] leading-[1.75] max-w-[420px] mb-7">
           Reserve the Rare scotches, aged cognacs, premier wines — curated by experts and collect from store.
         </p>
-        <div className="rl-hero__actions">
-          <button className="rl-btn rl-btn--gold rl-btn--lg" onClick={() => navigate('/products')}>Reserve now</button>
-          <button className="rl-btn rl-btn--outline rl-btn--lg" onClick={scrollToRange}>Browse Categories</button>
+        <div className="flex gap-3 flex-wrap mb-9 max-md:gap-2.5">
+          <button className="inline-flex items-center justify-center gap-1.5 py-3.5 px-[34px] text-sm font-semibold tracking-[1px] uppercase rounded-md cursor-pointer transition-all duration-[280ms] whitespace-nowrap border-none bg-gradient-to-br from-gold to-gold-dark text-black hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:-translate-y-px hover:shadow-[0_6px_20px_rgba(201,168,76,0.3)] max-md:py-3 max-md:px-[22px] max-md:text-[13px]" onClick={() => navigate('/products')}>Reserve now</button>
+          <button className="inline-flex items-center justify-center gap-1.5 py-3.5 px-[34px] text-sm font-semibold tracking-[1px] uppercase rounded-md cursor-pointer transition-all duration-[280ms] whitespace-nowrap border border-gold bg-transparent text-gold hover:bg-[rgba(201,168,76,0.08)] hover:-translate-y-px max-md:py-3 max-md:px-[22px] max-md:text-[13px]" onClick={scrollToRange}>Browse Categories</button>
         </div>
-        <div className="rl-hero__stats">
-          <div className="rl-stat">
-            <span className="rl-stat__num">500+</span>
-            <span className="rl-stat__label">Premium Labels</span>
+        <div className="flex items-center gap-6 max-md:gap-3.5 max-[480px]:flex-col max-[480px]:items-start max-[480px]:gap-2.5">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[22px] font-bold text-gold font-serif-app leading-none max-md:text-lg">500+</span>
+            <span className="text-[9px] text-text-dim tracking-[1.2px] uppercase">Premium Labels</span>
           </div>
-          <div className="rl-stat__divider"/>
-          <div className="rl-stat">
-            <span className="rl-stat__num">20+</span>
-            <span className="rl-stat__label">Countries Sourced</span>
+          <div className="w-px h-8 bg-[rgba(201,168,76,0.24)] shrink-0 max-[480px]:hidden"/>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[22px] font-bold text-gold font-serif-app leading-none max-md:text-lg">20+</span>
+            <span className="text-[9px] text-text-dim tracking-[1.2px] uppercase">Countries Sourced</span>
           </div>
-          <div className="rl-stat__divider"/>
-          <div className="rl-stat">
-            <span className="rl-stat__num">15K+</span>
-            <span className="rl-stat__label">Happy Customers</span>
+          <div className="w-px h-8 bg-[rgba(201,168,76,0.24)] shrink-0 max-[480px]:hidden"/>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[22px] font-bold text-gold font-serif-app leading-none max-md:text-lg">15K+</span>
+            <span className="text-[9px] text-text-dim tracking-[1.2px] uppercase">Happy Customers</span>
           </div>
         </div>
       </div>
@@ -330,35 +329,35 @@ function HeroSection() {
 
 function StoryPage() {
   return (
-    <div className="rl-story-page">
-      <div className="rl-story-page__hero">
-        <div className="rl-story-page__hero-inner">
-          <p className="rl-section-pre">OUR STORY</p>
-          <h1 className="rl-story-page__title">More Than a Store.<br/><span className="rl-gold">A Destination.</span></h1>
-          <p className="rl-story-page__lead">Founded in pursuit of perfection — Rabbit Liquor brings the world's rarest spirits to those who truly appreciate them.</p>
+    <div className="min-h-[80vh]">
+      <div className="py-[88px] px-16 bg-[radial-gradient(ellipse_60%_80%_at_50%_100%,#1c1300_0%,#080808_70%)] border-b border-[rgba(201,168,76,0.18)] text-center relative max-lg:py-[60px] max-lg:px-8 max-[480px]:py-9 max-[480px]:px-[18px] after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-[60%] after:h-px after:bg-gradient-to-r after:from-transparent after:via-gold after:to-transparent after:opacity-40">
+        <div className="max-w-[720px] mx-auto">
+          <p className="text-gold text-[10px] tracking-[4px] uppercase mb-3 opacity-85">OUR STORY</p>
+          <h1 className="text-[clamp(30px,4vw,52px)] font-serif-app font-bold text-white leading-[1.15] mt-3.5 mb-[18px]">More Than a Store.<br/><span className="text-gold italic">A Destination.</span></h1>
+          <p className="text-[15px] text-[#888] leading-[1.85] max-w-[560px] mx-auto">Founded in pursuit of perfection — Rabbit Liquor brings the world's rarest spirits to those who truly appreciate them.</p>
         </div>
       </div>
 
-      <div className="rl-story-page__body">
-        <div className="rl-story-page__text-block">
-          <h2 className="rl-story-page__h2">The Beginning</h2>
-          <p>Founded in the rolling vineyards of Napa Valley, Rabbit Liquor began as a passionate
+      <div className="max-w-[860px] mx-auto py-[72px] px-8 pb-24 flex flex-col gap-12 max-lg:py-12 max-lg:px-6 max-lg:pb-[72px]">
+        <div className="flex flex-col gap-4">
+          <h2 className="text-[clamp(20px,2.5vw,28px)] font-serif-app font-bold text-gold mb-1">The Beginning</h2>
+          <p className="text-[15px] text-[#888] leading-[1.9]">Founded in the rolling vineyards of Napa Valley, Rabbit Liquor began as a passionate
           pursuit of perfection. We believe every occasion deserves a spirit that matches its
           significance — whether that's a whisky aged fifteen years in charred oak, a champagne
           harvested from a single exceptional vintage, or a gin distilled with rare botanicals.</p>
-          <p>Our sommeliers and spirit masters travel the world to source bottles that represent
+          <p className="text-[15px] text-[#888] leading-[1.9]">Our sommeliers and spirit masters travel the world to source bottles that represent
           the pinnacle of their craft. We partner only with producers who share our obsession
           with quality, provenance, and the art of patience.</p>
         </div>
 
-        <div className="rl-story-page__text-block">
-          <h2 className="rl-story-page__h2">Our Philosophy</h2>
-          <p>Every bottle on our shelves has earned its place. We taste blind, judge on merit,
+        <div className="flex flex-col gap-4">
+          <h2 className="text-[clamp(20px,2.5vw,28px)] font-serif-app font-bold text-gold mb-1">Our Philosophy</h2>
+          <p className="text-[15px] text-[#888] leading-[1.9]">Every bottle on our shelves has earned its place. We taste blind, judge on merit,
           and champion the underdog as readily as the legend. From a single-village mezcal
           to a century-old cognac, if it moves us — it moves to our collection.</p>
         </div>
 
-        <div className="rl-intro__pillars" style={{ marginTop: '0' }}>
+        <div className="grid grid-cols-3 gap-6 max-lg:grid-cols-1 max-lg:gap-4" style={{ marginTop: '0' }}>
           {[
             { icon: '🏆', title: 'Award-Winning Curation', desc: 'Handpicked by certified sommeliers and master distillers.' },
             { icon: '🌍', title: 'Global Sourcing',         desc: 'Labels from over 20 countries, representing the finest terroirs.' },
@@ -367,10 +366,10 @@ function StoryPage() {
             { icon: '🍃', title: 'Sustainable Sourcing',    desc: 'Partnering with producers who respect the land they work.' },
             { icon: '🎁', title: 'Gift Concierge',          desc: 'Bespoke gifting packages curated for every occasion.' },
           ].map(p => (
-            <div className="rl-pillar" key={p.title}>
-              <span className="rl-pillar__icon">{p.icon}</span>
-              <h3 className="rl-pillar__title">{p.title}</h3>
-              <p className="rl-pillar__desc">{p.desc}</p>
+            <div className="bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-[10px] py-8 px-6 text-center transition-all duration-[280ms] hover:border-[rgba(201,168,76,0.5)] hover:-translate-y-1" key={p.title}>
+              <span className="text-[30px] block mb-3.5">{p.icon}</span>
+              <h3 className="text-[15px] font-semibold text-white font-serif-app mb-2">{p.title}</h3>
+              <p className="text-[13px] text-[#888] leading-[1.7]">{p.desc}</p>
             </div>
           ))}
         </div>
@@ -400,16 +399,16 @@ function RangeSection() {
   }
 
   return (
-    <section className="rl-range" id="range">
-      <div className="rl-section-header">
-        <p className="rl-section-pre">DISCOVER</p>
-        <h2 className="rl-section-title">Our <span className="rl-gold">Range</span></h2>
-        <p className="rl-section-sub">Ten magnificent categories — scroll to explore</p>
+    <section className="py-[88px] pb-20 bg-[linear-gradient(180deg,#080808_0%,#0f0d07_60%,#080808_100%)] relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-1/2 before:-translate-x-1/2 before:w-[70%] before:h-px before:bg-gradient-to-r before:from-transparent before:via-gold before:to-transparent before:opacity-35" id="range">
+      <div className="text-center mb-[52px] px-6">
+        <p className="text-gold text-[10px] tracking-[4px] uppercase mb-3 opacity-85">DISCOVER</p>
+        <h2 className="text-[clamp(26px,3.5vw,44px)] font-bold text-white font-serif-app mb-2.5">Our <span className="text-gold italic">Range</span></h2>
+        <p className="text-sm text-text-dim">Ten magnificent categories — scroll to explore</p>
       </div>
 
-      <div className="rl-range-carousel-wrap">
+      <div className="relative px-[68px] max-lg:px-14 max-md:px-[46px] max-[480px]:px-[38px]">
         <button
-          className={`rl-range-btn rl-range-btn--left${!canLeft ? ' rl-range-btn--hidden' : ''}`}
+          className={`absolute top-1/2 left-[10px] -translate-y-[55%] z-10 bg-[rgba(6,6,6,0.92)] border border-[rgba(201,168,76,0.42)] text-gold w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition-all duration-[280ms] hover:bg-[rgba(201,168,76,0.1)] hover:border-gold hover:shadow-[0_0_18px_rgba(201,168,76,0.22)] ${!canLeft ? 'opacity-0 pointer-events-none' : ''}`}
           onClick={() => scrollBy(-1)}
           aria-label="Scroll left"
         >
@@ -418,11 +417,11 @@ function RangeSection() {
           </svg>
         </button>
 
-        <div className="rl-range-carousel" ref={scrollRef} onScroll={onScroll}>
+        <div className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide py-4 px-1 pb-9 -webkit-overflow-scrolling-touch max-md:gap-3" ref={scrollRef} onScroll={onScroll}>
           {CATEGORIES.map((cat, i) => (
           <button
             key={cat.name}
-            className={`rl-range-card${active === i ? ' rl-range-card--active' : ''}`}
+            className={`group flex-[0_0_178px] relative flex flex-col items-center gap-2.5 py-7 px-4 bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-[18px] cursor-pointer overflow-hidden transition-all duration-[320ms] font-sans-app text-center hover:border-[var(--cat-accent,#c9a84c)] hover:shadow-[0_0_28px_-4px_var(--cat-glow,rgba(201,168,76,0.25))] hover:-translate-y-1.5 hover:bg-[#141414] max-md:flex-[0_0_155px] max-md:py-5 max-md:px-2.5 max-md:rounded-[14px] max-[480px]:flex-[0_0_140px] max-[480px]:py-4 max-[480px]:px-2 ${active === i ? 'border-[var(--cat-accent,#c9a84c)] shadow-[0_0_40px_-4px_var(--cat-glow,rgba(201,168,76,0.3))] -translate-y-1.5 bg-[#141414]' : ''}`}
             style={{
               '--cat-accent': cat.accent,
               '--cat-bg':     cat.bg,
@@ -431,16 +430,16 @@ function RangeSection() {
             onClick={() => navigate(`/products?category=${encodeURIComponent(cat.name)}`)}
             aria-pressed={active === i}
           >
-            <div className="rl-range-card__shine"/>
-            <div className="rl-range-card__glow"/>
-            <div className="rl-range-card__icon">
+            <div className="absolute top-0 -left-3/4 w-1/2 h-full bg-[linear-gradient(105deg,transparent_40%,rgba(255,255,255,0.04)_50%,transparent_60%)] transition-[left] duration-[550ms] pointer-events-none group-hover:left-[135%]"/>
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center_bottom,var(--cat-bg,rgba(30,20,0,0.5))_0%,transparent_70%)] opacity-0 transition-opacity duration-[350ms] pointer-events-none group-hover:opacity-100"/>
+            <div className="w-16 h-[108px] relative z-[1] shrink-0 max-md:w-[52px] max-md:h-[88px] max-[480px]:w-[42px] max-[480px]:h-[72px]">
               <cat.Glass active={active === i}/>
             </div>
-            <span className="rl-range-card__count">{cat.count}</span>
-            <span className="rl-range-card__name">{cat.name}</span>
-            <span className="rl-range-card__desc">{cat.desc}</span>
+            <span className="absolute top-3 right-3 text-[9px] text-[var(--cat-accent,#c9a84c)] bg-[rgba(0,0,0,0.4)] border border-[var(--cat-accent,#c9a84c)] rounded-full py-0.5 px-2 tracking-[0.5px] z-[2] opacity-0 -translate-y-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">{cat.count}</span>
+            <span className="text-[13px] font-bold text-white tracking-[1.4px] uppercase z-[1] transition-colors duration-300 group-hover:text-[var(--cat-accent,#c9a84c)]">{cat.name}</span>
+            <span className="text-[10px] text-text-dim leading-[1.45] z-[1] opacity-0 translate-y-1 transition-all duration-300 delay-[50ms] group-hover:opacity-100 group-hover:translate-y-0">{cat.desc}</span>
             {active === i && (
-              <span className="rl-range-card__arrow">
+              <span className="inline-flex items-center gap-[5px] text-[10px] text-[var(--cat-accent,#c9a84c)] tracking-[0.8px] uppercase z-[1] animate-rl-fadein">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" width="12" height="12" aria-hidden="true">
                   <line x1="0" y1="8" x2="12" y2="8"/>
                   <polyline points="7,3 12,8 7,13"/>
@@ -453,7 +452,7 @@ function RangeSection() {
         </div>
 
         <button
-          className={`rl-range-btn rl-range-btn--right${!canRight ? ' rl-range-btn--hidden' : ''}`}
+          className={`absolute top-1/2 right-[10px] -translate-y-[55%] z-10 bg-[rgba(6,6,6,0.92)] border border-[rgba(201,168,76,0.42)] text-gold w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition-all duration-[280ms] hover:bg-[rgba(201,168,76,0.1)] hover:border-gold hover:shadow-[0_0_18px_rgba(201,168,76,0.22)] ${!canRight ? 'opacity-0 pointer-events-none' : ''}`}
           onClick={() => scrollBy(1)}
           aria-label="Scroll right"
         >
@@ -477,14 +476,14 @@ function TrendingCard({ product }) {
   const count = getProductCount ? getProductCount(product.id) : 0
 
   return (
-    <div className="rl-prod-card">
-      <div className="rl-prod-card__visual">
-        <span className="rl-prod-card__badge">{product.category}</span>
+    <div className="group flex-[0_0_215px] bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-xl overflow-hidden transition-all duration-[280ms] cursor-pointer hover:border-[rgba(201,168,76,0.5)] hover:-translate-y-2 hover:shadow-[0_18px_44px_rgba(201,168,76,0.1)] max-[480px]:flex-[0_0_180px]">
+      <div className="relative h-[210px] bg-gradient-to-br from-[#131313] to-[#0d0d0d] flex items-center justify-center">
+        <span className="absolute top-3 left-3 bg-[rgba(201,168,76,0.12)] border border-[rgba(201,168,76,0.3)] text-gold text-[9px] tracking-[1.5px] py-[3px] px-2.5 rounded-full uppercase">{product.category}</span>
         {!imgError && product.image_url ? (
           <img
             src={product.image_url}
             alt={product.item_name}
-            className="rl-prod-card__img"
+            className="w-full h-full object-cover block"
             onError={() => setImgError(true)}
           />
         ) : (
@@ -495,18 +494,18 @@ function TrendingCard({ product }) {
           />
         )}
       </div>
-      <div className="rl-prod-card__info">
-        <h3 className="rl-prod-card__name">{product.item_name}</h3>
-        <p className="rl-prod-card__meta">{product.origin} · {product.category}</p>
-        <div className="rl-prod-card__footer">
-          <span className="rl-prod-card__price">${product.price.toFixed(2)}</span>
+      <div className="p-4">
+        <h3 className="text-sm font-semibold text-white font-serif-app leading-[1.3] mb-[5px]">{product.item_name}</h3>
+        <p className="text-[11px] text-text-dim mb-[9px]">{product.origin} · {product.category}</p>
+        <div className="flex items-center justify-between">
+          <span className="text-[19px] font-bold text-gold font-serif-app">${product.price.toFixed(2)}</span>
           {count === 0 ? (
-            <button className="rl-prod-card__add" onClick={() => addToCart?.(product)}>+ Add</button>
+            <button className="bg-transparent border border-gold text-gold py-[5px] px-3 rounded-md text-[11px] cursor-pointer transition-colors duration-[280ms] font-sans-app hover:bg-[rgba(201,168,76,0.12)]" onClick={() => addToCart?.(product)}>+ Add</button>
           ) : (
-            <div className="rl-prod-card__qty">
-              <button className="rl-prod-card__qty-btn" onClick={() => removeFromCart?.(product)}>−</button>
-              <span className="rl-prod-card__qty-count">{count}</span>
-              <button className="rl-prod-card__qty-btn" onClick={() => addToCart?.(product)}>+</button>
+            <div className="flex items-center gap-1 border border-[rgba(201,168,76,0.4)] rounded-md overflow-hidden">
+              <button className="bg-transparent border-none text-gold w-[26px] h-[26px] text-[15px] cursor-pointer flex items-center justify-center transition-colors duration-[280ms] font-sans-app hover:bg-[rgba(201,168,76,0.12)]" onClick={() => removeFromCart?.(product)}>−</button>
+              <span className="min-w-[20px] text-center text-xs font-semibold text-gold">{count}</span>
+              <button className="bg-transparent border-none text-gold w-[26px] h-[26px] text-[15px] cursor-pointer flex items-center justify-center transition-colors duration-[280ms] font-sans-app hover:bg-[rgba(201,168,76,0.12)]" onClick={() => addToCart?.(product)}>+</button>
             </div>
           )}
         </div>
@@ -530,27 +529,27 @@ function TrendingSection() {
   }
 
   return (
-    <section className="rl-trending" id="trending">
-      <div className="rl-section-header">
-        <p className="rl-section-pre">FEATURED</p>
-        <h2 className="rl-section-title">Trending <span className="rl-gold">Products</span></h2>
-        <p className="rl-section-sub">Our most sought-after spirits this season</p>
+    <section className="py-[100px] bg-bg-base relative before:content-[''] before:absolute before:top-0 before:left-1/2 before:-translate-x-1/2 before:w-[70%] before:h-px before:bg-gradient-to-r before:from-transparent before:via-gold before:to-transparent before:opacity-30" id="trending">
+      <div className="text-center mb-[52px] px-6">
+        <p className="text-gold text-[10px] tracking-[4px] uppercase mb-3 opacity-85">FEATURED</p>
+        <h2 className="text-[clamp(26px,3.5vw,44px)] font-bold text-white font-serif-app mb-2.5">Trending <span className="text-gold italic">Products</span></h2>
+        <p className="text-sm text-text-dim">Our most sought-after spirits this season</p>
       </div>
-      <div className="rl-carousel-wrap">
+      <div className="relative px-12 max-lg:px-5 max-[480px]:px-3.5">
         {canLeft && (
-          <button className="rl-carousel-btn rl-carousel-btn--left" onClick={() => scroll(-1)} aria-label="Scroll left">
+          <button className="absolute top-1/2 left-[2px] -translate-y-[60%] z-10 bg-[rgba(6,6,6,0.92)] border border-[rgba(201,168,76,0.38)] text-gold w-[42px] h-[42px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-[280ms] hover:bg-[rgba(201,168,76,0.1)] hover:border-gold" onClick={() => scroll(-1)} aria-label="Scroll left">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="18" height="18" aria-hidden="true">
               <polyline points="15 18 9 12 15 6"/>
             </svg>
           </button>
         )}
-        <div className="rl-carousel" ref={scrollRef} onScroll={onScroll}>
+        <div className="flex gap-5 overflow-x-auto scroll-smooth py-4 px-1 pb-8 scrollbar-gold" ref={scrollRef} onScroll={onScroll}>
           {REAL_PRODUCTS.map(p => (
             <TrendingCard key={p.id} product={p} />
           ))}
         </div>
         {canRight && (
-          <button className="rl-carousel-btn rl-carousel-btn--right" onClick={() => scroll(1)} aria-label="Scroll right">
+          <button className="absolute top-1/2 right-[2px] -translate-y-[60%] z-10 bg-[rgba(6,6,6,0.92)] border border-[rgba(201,168,76,0.38)] text-gold w-[42px] h-[42px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-[280ms] hover:bg-[rgba(201,168,76,0.1)] hover:border-gold" onClick={() => scroll(1)} aria-label="Scroll right">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="18" height="18" aria-hidden="true">
               <polyline points="9 18 15 12 9 6"/>
             </svg>
@@ -567,19 +566,19 @@ function TrendingSection() {
 
 function ReviewsSection() {
   return (
-    <section className="rl-reviews" id="reviews">
-      <div className="rl-section-header">
-        <p className="rl-section-pre">TESTIMONIALS</p>
-        <h2 className="rl-section-title">What Our <span className="rl-gold">Connoisseurs</span> Say</h2>
+    <section className="py-[100px] px-16 bg-[linear-gradient(180deg,#080808,#0e0b05,#080808)] border-t border-[rgba(201,168,76,0.18)] max-lg:py-20 max-lg:px-8 max-md:py-16 max-md:px-[22px]" id="reviews">
+      <div className="text-center mb-[52px] px-6">
+        <p className="text-gold text-[10px] tracking-[4px] uppercase mb-3 opacity-85">TESTIMONIALS</p>
+        <h2 className="text-[clamp(26px,3.5vw,44px)] font-bold text-white font-serif-app mb-2.5">What Our <span className="text-gold italic">Connoisseurs</span> Say</h2>
       </div>
-      <div className="rl-reviews__grid">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-[22px] max-w-[1200px] mx-auto max-md:grid-cols-1">
         {REVIEWS.map(r => (
-          <div key={r.id} className="rl-review-card">
-            <div className="rl-review-card__stars">{'★'.repeat(r.rating)}</div>
-            <p className="rl-review-card__text">"{r.text}"</p>
-            <div className="rl-review-card__author">
-              <div className="rl-review-card__avatar">{r.avatar}</div>
-              <span className="rl-review-card__name">{r.name}</span>
+          <div key={r.id} className="bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-xl py-[34px] px-[30px] relative transition-all duration-[280ms] hover:border-[rgba(201,168,76,0.38)] hover:-translate-y-[5px] hover:shadow-[0_14px_36px_rgba(201,168,76,0.07)] before:content-['\u201c'] before:absolute before:top-3 before:right-[22px] before:text-[88px] before:text-[rgba(201,168,76,0.07)] before:font-serif-app before:leading-none before:pointer-events-none">
+            <div className="text-gold text-[15px] tracking-[2px] mb-4">{'★'.repeat(r.rating)}</div>
+            <p className="text-sm text-[#888] leading-[1.85] font-serif-app italic mb-[22px]">"{r.text}"</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-gold-dark text-black font-bold text-base flex items-center justify-center shrink-0">{r.avatar}</div>
+              <span className="text-[13px] font-semibold text-[#ccc]">{r.name}</span>
             </div>
           </div>
         ))}
@@ -594,23 +593,23 @@ function ReviewsSection() {
 
 function Footer({ onNavigate }) {
   return (
-    <footer className="rl-footer" id="about">
-      <div className="rl-footer__top">
-        <div className="rl-footer__brand">
-          <div className="rl-footer__logo">
+    <footer className="bg-[#040404] border-t border-[rgba(201,168,76,0.18)]" id="about">
+      <div className="flex gap-[72px] py-20 px-16 max-w-[1400px] mx-auto max-lg:flex-col max-lg:gap-10 max-lg:py-14 max-lg:px-8">
+        <div className="flex-[0_0_280px] max-lg:flex-none">
+          <div className="flex items-center gap-3 mb-5">
             <RabbitLogo size={48}/>
-            <span className="rl-footer__brand-name">Rabbit Liquor</span>
+            <span className="text-[19px] font-bold text-gold font-serif-app tracking-[0.8px]">Rabbit Liquor</span>
           </div>
-          <p className="rl-footer__tagline">
+          <p className="text-[13px] text-text-dim leading-[1.85] mb-[26px]">
             Curating the world's finest spirits for those who appreciate the extraordinary.
           </p>
-          <div className="rl-footer__social">
+          <div className="flex gap-2.5">
             {[
               { label: 'Instagram', d: 'M2 2h20v20H2z M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z M17.5 6.5h.01', rx: true },
               { label: 'Facebook',  d: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z' },
               { label: 'Twitter',   d: 'M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z' },
             ].map(s => (
-              <a href="#" key={s.label} className="rl-social-link" aria-label={s.label}>
+              <a href="#" key={s.label} className="flex items-center justify-center w-9 h-9 border border-[rgba(201,168,76,0.28)] rounded-full text-gold no-underline transition-all duration-[280ms] hover:bg-[rgba(201,168,76,0.1)] hover:border-gold" aria-label={s.label}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16" aria-hidden="true">
                   {s.rx
                     ? <><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></>
@@ -622,37 +621,37 @@ function Footer({ onNavigate }) {
           </div>
         </div>
 
-        <div className="rl-footer__links">
-          <div className="rl-footer__col">
-            <h4>Navigate</h4>
-            <a href="#home">Home</a>
-            <a href="#range">Our Range</a>
-            <a href="#trending">Trending</a>
-            <a href="#reserve">Reserve Collection</a>
+        <div className="flex gap-14 flex-1 flex-wrap max-lg:gap-8 max-md:flex-col max-md:gap-7">
+          <div className="flex flex-col gap-[11px]">
+            <h4 className="text-[10px] tracking-[2.5px] uppercase text-gold font-sans-app mb-1.5">Navigate</h4>
+            <a href="#home" className="text-[13px] text-text-dim no-underline transition-colors duration-[280ms] hover:text-gold">Home</a>
+            <a href="#range" className="text-[13px] text-text-dim no-underline transition-colors duration-[280ms] hover:text-gold">Our Range</a>
+            <a href="#trending" className="text-[13px] text-text-dim no-underline transition-colors duration-[280ms] hover:text-gold">Trending</a>
+            <a href="#reserve" className="text-[13px] text-text-dim no-underline transition-colors duration-[280ms] hover:text-gold">Reserve Collection</a>
           </div>
-          <div className="rl-footer__col">
-            <h4>About</h4>
-            <button className="rl-footer__nav-btn" onClick={() => onNavigate('story')}>Our Story</button>
-            <button className="rl-footer__nav-btn" onClick={() => onNavigate('story')}>Sourcing Philosophy</button>
-            <a href="#">Blog</a>
-            <a href="#">Press</a>
+          <div className="flex flex-col gap-[11px]">
+            <h4 className="text-[10px] tracking-[2.5px] uppercase text-gold font-sans-app mb-1.5">About</h4>
+            <button className="bg-transparent border-none text-[13px] text-text-dim cursor-pointer p-0 font-sans-app text-left transition-colors duration-[280ms] hover:text-gold" onClick={() => onNavigate('story')}>Our Story</button>
+            <button className="bg-transparent border-none text-[13px] text-text-dim cursor-pointer p-0 font-sans-app text-left transition-colors duration-[280ms] hover:text-gold" onClick={() => onNavigate('story')}>Sourcing Philosophy</button>
+            <a href="#" className="text-[13px] text-text-dim no-underline transition-colors duration-[280ms] hover:text-gold">Blog</a>
+            <a href="#" className="text-[13px] text-text-dim no-underline transition-colors duration-[280ms] hover:text-gold">Press</a>
           </div>
-          <div className="rl-footer__col">
-            <h4>Contact</h4>
-            <p className="rl-footer__contact">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13" aria-hidden="true">
+          <div className="flex flex-col gap-[11px]">
+            <h4 className="text-[10px] tracking-[2.5px] uppercase text-gold font-sans-app mb-1.5">Contact</h4>
+            <p className="text-xs text-text-dim flex items-start gap-2 leading-[1.6]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13" aria-hidden="true" className="shrink-0 mt-0.5 text-gold">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
               </svg>
               123 Reserve Lane, Napa Valley, CA
             </p>
-            <p className="rl-footer__contact">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13" aria-hidden="true">
+            <p className="text-xs text-text-dim flex items-start gap-2 leading-[1.6]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13" aria-hidden="true" className="shrink-0 mt-0.5 text-gold">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.58 3.47 2 2 0 0 1 3.54 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.72a16 16 0 0 0 6 6l1.06-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/>
               </svg>
               +1 (800) RABBIT-LQ
             </p>
-            <p className="rl-footer__contact">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13" aria-hidden="true">
+            <p className="text-xs text-text-dim flex items-start gap-2 leading-[1.6]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13" aria-hidden="true" className="shrink-0 mt-0.5 text-gold">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
               </svg>
               hello@rabbitliquor.com
@@ -661,12 +660,12 @@ function Footer({ onNavigate }) {
         </div>
       </div>
 
-      <div className="rl-footer__bottom">
-        <p>© 2026 Rabbit Liquor · All rights reserved · Drink Responsibly · Must be 21+ to purchase.</p>
-        <div className="rl-footer__legal">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Age Verification</a>
+      <div className="flex items-center justify-between py-5 px-16 border-t border-[rgba(201,168,76,0.1)] flex-wrap gap-3 max-lg:px-8 max-md:flex-col max-md:items-start max-md:gap-2">
+        <p className="text-[11px] text-[#333]">© 2026 Rabbit Liquor · All rights reserved · Drink Responsibly · Must be 21+ to purchase.</p>
+        <div className="flex gap-[22px] max-md:flex-wrap max-md:gap-3.5">
+          <a href="#" className="text-[11px] text-[#333] no-underline transition-colors duration-[280ms] hover:text-gold">Privacy Policy</a>
+          <a href="#" className="text-[11px] text-[#333] no-underline transition-colors duration-[280ms] hover:text-gold">Terms of Service</a>
+          <a href="#" className="text-[11px] text-[#333] no-underline transition-colors duration-[280ms] hover:text-gold">Age Verification</a>
         </div>
       </div>
     </footer>
@@ -681,7 +680,7 @@ export default function HomePage() {
   const [page, setPage] = useState('home')
 
   return (
-    <div className="rl-app">
+    <div className="bg-bg-base text-text-main font-sans-app min-h-svh overflow-x-hidden">
       <Navbar onNavigate={setPage} currentPage={page}/>
       {page === 'story' ? (
         <main>

@@ -6,24 +6,24 @@ import { toast } from "sonner";
 import { ArrowLeft, Trash2, ShoppingCart, Package } from "lucide-react";
 import { reserveProduct } from "@/api/reserveProduct";
 import BottleSVG, { CATEGORY_FALLBACK } from "@/components/BottleSVG";
-import "./CartPage.css";
 
 function CartItem({ item, addToCart, removeFromCart }) {
   const [imgError, setImgError] = useState(false);
   const fallback = CATEGORY_FALLBACK[item.product.category] || CATEGORY_FALLBACK.default;
 
   return (
-    <div className="cp-item">
+    <div className="flex gap-4 py-5 px-6 transition-colors duration-200 not-last:border-b not-last:border-[rgba(201,168,76,0.08)] hover:bg-[rgba(255,255,255,0.015)]">
       {/* Thumbnail */}
-      <div className="cp-item__thumb">
+      <div className="w-[88px] h-[88px] shrink-0 rounded-lg overflow-hidden border border-[rgba(201,168,76,0.15)] bg-[#0d0d0d]">
         {!imgError && item.product.image_url ? (
           <img
             src={item.product.image_url}
             alt={item.product.item_name}
+            className="w-full h-full object-cover block"
             onError={() => setImgError(true)}
           />
         ) : (
-          <div className="cp-item__thumb-fallback">
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#131313] to-[#0d0d0d]">
             <BottleSVG
               color={fallback.color}
               label={item.product.category.toUpperCase()}
@@ -34,17 +34,17 @@ function CartItem({ item, addToCart, removeFromCart }) {
       </div>
 
       {/* Details */}
-      <div className="cp-item__details">
-        <div className="cp-item__top">
+      <div className="flex-1 flex flex-col justify-between min-w-0">
+        <div className="flex items-start justify-between gap-2">
           <div>
-            <div className="cp-item__name">{item.product.item_name}</div>
-            <div className="cp-item__meta">
+            <div className="text-sm font-semibold text-text-main font-serif-app leading-[1.3]">{item.product.item_name}</div>
+            <div className="text-[11px] text-text-dim mt-[3px]">
               {item.product.volume || "750 ml"} · {item.product.alcoholContent || "40%"} ABV
             </div>
-            <div className="cp-item__price-unit">${item.product.price}</div>
+            <div className="text-[13px] font-semibold text-gold mt-1">${item.product.price}</div>
           </div>
           <button
-            className="cp-item__remove"
+            className="bg-transparent border-none cursor-pointer text-[#444] p-1 rounded flex items-center justify-center transition-colors duration-200 shrink-0 hover:text-[#c0392b]"
             onClick={() => removeFromCart(item.product.id)}
             aria-label="Remove item"
           >
@@ -52,13 +52,13 @@ function CartItem({ item, addToCart, removeFromCart }) {
           </button>
         </div>
 
-        <div className="cp-item__bottom">
-          <div className="cp-qty">
-            <button className="cp-qty__btn" onClick={() => removeFromCart(item.product)}>−</button>
-            <span className="cp-qty__count">{item.quantity}</span>
-            <button className="cp-qty__btn" onClick={() => addToCart(item.product)}>+</button>
+        <div className="flex items-center justify-between mt-2.5">
+          <div className="flex items-center border border-[rgba(201,168,76,0.3)] rounded-md overflow-hidden">
+            <button className="bg-transparent border-none text-gold w-8 h-8 text-base cursor-pointer flex items-center justify-center transition-colors duration-200 font-[inherit] leading-none hover:bg-[rgba(201,168,76,0.1)]" onClick={() => removeFromCart(item.product)}>−</button>
+            <span className="text-[13px] font-semibold text-text-main min-w-[36px] text-center">{item.quantity}</span>
+            <button className="bg-transparent border-none text-gold w-8 h-8 text-base cursor-pointer flex items-center justify-center transition-colors duration-200 font-[inherit] leading-none hover:bg-[rgba(201,168,76,0.1)]" onClick={() => addToCart(item.product)}>+</button>
           </div>
-          <span className="cp-item__total">
+          <span className="text-[15px] font-bold text-gold font-serif-app">
             ${item.product.price * item.quantity}
           </span>
         </div>
@@ -75,7 +75,7 @@ function CartPage() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
 
-  const subtotal = 6969; // TO DO getCartTotal()
+  const subtotal = 6969;
   const tax = subtotal * 0.08;
   const total = subtotal + tax;
 
@@ -104,16 +104,16 @@ function CartPage() {
   /* ── Empty state ─────────────────────────────────────────── */
   if (!cartProducts || Object.keys(cartProducts).length === 0) {
     return (
-      <div className="cp-wrap">
-        <div className="cp-empty">
-          <div className="cp-empty__icon-wrap">
+      <div className="min-h-screen bg-bg-base text-text-main font-sans-app">
+        <div className="flex flex-col items-center justify-center min-h-[380px] gap-3.5 text-center">
+          <div className="w-[88px] h-[88px] rounded-full bg-[rgba(201,168,76,0.06)] border border-[rgba(201,168,76,0.18)] flex items-center justify-center text-[#444]">
             <ShoppingCart size={40} />
           </div>
-          <h2 className="cp-empty__title">Your cart is empty</h2>
-          <p className="cp-empty__sub">
+          <h2 className="text-[22px] font-bold text-[#888] font-serif-app">Your cart is empty</h2>
+          <p className="text-[13px] text-text-dim leading-[1.6] max-w-[280px]">
             Add some products to your cart to get started
           </p>
-          <button className="cp-empty__btn" onClick={() => navigate("/products")}>
+          <button className="inline-flex items-center justify-center gap-2 py-3 px-7 bg-gradient-to-br from-gold to-gold-dark text-black text-[13px] font-bold tracking-[0.8px] uppercase border-none rounded-md cursor-pointer transition-all duration-[280ms] font-[inherit] mt-1.5 hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:shadow-[0_6px_20px_rgba(201,168,76,0.3)]" onClick={() => navigate("/products")}>
             Continue Shopping
           </button>
         </div>
@@ -123,28 +123,28 @@ function CartPage() {
 
   /* ── Filled cart ─────────────────────────────────────────── */
   return (
-    <div className="cp-wrap">
+    <div className="min-h-screen bg-bg-base text-text-main font-sans-app">
       {/* Page header */}
-      <div className="cp-page-header">
-        <button className="cp-back-btn" onClick={() => navigate("/products")}>
+      <div className="mb-8 pb-6 border-b border-[rgba(201,168,76,0.15)] flex items-center gap-4">
+        <button className="inline-flex items-center gap-[7px] bg-transparent border border-[rgba(201,168,76,0.3)] text-gold text-xs tracking-[0.6px] uppercase py-2 px-4 rounded-full cursor-pointer transition-all duration-[280ms] font-[inherit] hover:bg-[rgba(201,168,76,0.08)] hover:border-gold" onClick={() => navigate("/products")}>
           <ArrowLeft size={13} />
           Back
         </button>
-        <div className="cp-page-header__text">
-          <p className="cp-page-header__pre">Your Selection</p>
-          <h1 className="cp-page-header__title">
-            Your <em>Cart</em>
+        <div className="flex-1">
+          <p className="text-[10px] tracking-[4px] uppercase text-gold opacity-85 mb-1">Your Selection</p>
+          <h1 className="text-[clamp(22px,3vw,32px)] font-bold text-white font-serif-app leading-[1.2]">
+            Your <em className="text-gold italic">Cart</em>
           </h1>
         </div>
       </div>
 
-      <div className="cp-grid">
+      <div className="grid gap-7 lg:grid-cols-[1fr_minmax(300px,360px)] lg:items-start">
         {/* ── Cart items panel ── */}
-        <div className="cp-panel">
-          <div className="cp-panel__header">
-            <h2 className="cp-panel__title">Cart Items</h2>
+        <div className="bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-xl overflow-hidden">
+          <div className="py-5 px-6 border-b border-[rgba(201,168,76,0.12)]">
+            <h2 className="text-[15px] font-bold text-white font-serif-app tracking-[0.5px]">Cart Items</h2>
           </div>
-          <div className="cp-panel__body">
+          <div className="py-2">
             {Object.values(cartProducts).map((item) => (
               <CartItem
                 key={item.product.id}
@@ -157,37 +157,37 @@ function CartPage() {
         </div>
 
         {/* ── Order summary panel ── */}
-        <div className="cp-summary">
-          <div className="cp-summary__header">
-            <h2 className="cp-summary__title">Order Summary</h2>
+        <div className="bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-xl overflow-hidden sticky top-[88px]">
+          <div className="py-5 px-6 border-b border-[rgba(201,168,76,0.12)]">
+            <h2 className="text-[15px] font-bold text-white font-serif-app tracking-[0.5px]">Order Summary</h2>
           </div>
-          <div className="cp-summary__body">
-            <div className="cp-summary__row">
-              <span className="cp-summary__label">Subtotal</span>
-              <span className="cp-summary__value">${subtotal.toFixed(2)}</span>
+          <div className="p-6 flex flex-col gap-3.5">
+            <div className="flex justify-between items-center text-[13px]">
+              <span className="text-[#666]">Subtotal</span>
+              <span className="text-text-main">${subtotal.toFixed(2)}</span>
             </div>
-            <div className="cp-summary__row">
-              <span className="cp-summary__label">Tax (8%)</span>
-              <span className="cp-summary__value">${tax.toFixed(2)}</span>
+            <div className="flex justify-between items-center text-[13px]">
+              <span className="text-[#666]">Tax (8%)</span>
+              <span className="text-text-main">${tax.toFixed(2)}</span>
             </div>
-            <div className="cp-summary__divider" />
-            <div className="cp-summary__total-row">
-              <span className="cp-summary__total-label">Total</span>
-              <span className="cp-summary__total-value">${total.toFixed(2)}</span>
+            <div className="h-px bg-[rgba(201,168,76,0.12)] my-1" />
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm font-semibold text-text-main">Total</span>
+              <span className="text-[26px] font-bold text-gold font-serif-app leading-none">${total.toFixed(2)}</span>
             </div>
 
             {/* Pickup info */}
-            <div className="cp-pickup-box">
-              <Package size={18} className="cp-pickup-box__icon" />
+            <div className="flex gap-3 bg-[rgba(201,168,76,0.05)] border border-[rgba(201,168,76,0.15)] rounded-lg py-3.5 px-4">
+              <Package size={18} className="text-gold shrink-0 mt-px" />
               <div>
-                <div className="cp-pickup-box__title">Store Pickup Only</div>
-                <div className="cp-pickup-box__desc">
+                <div className="text-[13px] font-semibold text-text-main mb-1">Store Pickup Only</div>
+                <div className="text-xs text-[#666] leading-[1.65]">
                   Ready for pickup within 2 hours. Valid ID required (21+).
                 </div>
               </div>
             </div>
 
-            <button className="cp-reserve-btn" onClick={() => setCheckoutOpen(true)}>
+            <button className="flex items-center justify-center w-full py-3.5 bg-gradient-to-br from-gold to-gold-dark text-black text-[13px] font-bold tracking-[1px] uppercase border-none rounded-md cursor-pointer transition-all duration-[280ms] font-[inherit] hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:shadow-[0_6px_20px_rgba(201,168,76,0.3)]" onClick={() => setCheckoutOpen(true)}>
               Reserve for Pickup
             </button>
           </div>
@@ -196,28 +196,29 @@ function CartPage() {
 
       {/* ── Checkout dialog ── */}
       {checkoutOpen && (
-        <div className="cp-dialog-overlay" onClick={() => setCheckoutOpen(false)}>
-          <div className="cp-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.75)] z-[9000] flex items-center justify-center p-6" onClick={() => setCheckoutOpen(false)}>
+          <div className="bg-bg-card border border-[rgba(201,168,76,0.25)] rounded-[14px] w-full max-w-[480px] max-h-[90vh] overflow-y-auto p-8 flex flex-col gap-[22px] relative" onClick={(e) => e.stopPropagation()}>
             <div>
-              <h2 className="cp-dialog__title">Complete Your Reservation</h2>
-              <p className="cp-dialog__sub">
+              <h2 className="text-xl font-bold text-white font-serif-app">Complete Your Reservation</h2>
+              <p className="text-[13px] text-[#666] mt-1 leading-[1.6]">
                 Enter your details to reserve your items for pickup
               </p>
             </div>
 
             <form onSubmit={handleCheckout} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <div className="cp-field">
-                <label htmlFor="cp-name">Full Name</label>
+              <div className="flex flex-col gap-[7px]">
+                <label htmlFor="cp-name" className="text-[11px] tracking-[1.5px] uppercase text-[#888] font-[inherit]">Full Name</label>
                 <input
                   id="cp-name"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="John Doe"
+                  className="bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-md py-[11px] px-3.5 text-[13px] text-text-main outline-none transition-all duration-[280ms] font-[inherit] placeholder:text-[#444] focus:border-gold focus:bg-[rgba(255,255,255,0.06)]"
                 />
               </div>
-              <div className="cp-field">
-                <label htmlFor="cp-email">Email</label>
+              <div className="flex flex-col gap-[7px]">
+                <label htmlFor="cp-email" className="text-[11px] tracking-[1.5px] uppercase text-[#888] font-[inherit]">Email</label>
                 <input
                   id="cp-email"
                   type="email"
@@ -225,10 +226,11 @@ function CartPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="john@example.com"
+                  className="bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-md py-[11px] px-3.5 text-[13px] text-text-main outline-none transition-all duration-[280ms] font-[inherit] placeholder:text-[#444] focus:border-gold focus:bg-[rgba(255,255,255,0.06)]"
                 />
               </div>
-              <div className="cp-field">
-                <label htmlFor="cp-phone">Phone Number</label>
+              <div className="flex flex-col gap-[7px]">
+                <label htmlFor="cp-phone" className="text-[11px] tracking-[1.5px] uppercase text-[#888] font-[inherit]">Phone Number</label>
                 <input
                   id="cp-phone"
                   type="tel"
@@ -236,42 +238,43 @@ function CartPage() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="(555) 123-4567"
+                  className="bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-md py-[11px] px-3.5 text-[13px] text-text-main outline-none transition-all duration-[280ms] font-[inherit] placeholder:text-[#444] focus:border-gold focus:bg-[rgba(255,255,255,0.06)]"
                 />
               </div>
 
               {/* Mini order summary */}
-              <div className="cp-dialog__summary">
-                <div className="cp-dialog__summary-row">
-                  <span className="cp-dialog__summary-label">Subtotal</span>
-                  <span className="cp-dialog__summary-value">${subtotal.toFixed(2)}</span>
+              <div className="bg-[rgba(201,168,76,0.04)] border border-[rgba(201,168,76,0.15)] rounded-lg p-4 flex flex-col gap-2">
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-[#666]">Subtotal</span>
+                  <span className="text-text-main">${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="cp-dialog__summary-row">
-                  <span className="cp-dialog__summary-label">Tax (8%)</span>
-                  <span className="cp-dialog__summary-value">${tax.toFixed(2)}</span>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-[#666]">Tax (8%)</span>
+                  <span className="text-text-main">${tax.toFixed(2)}</span>
                 </div>
-                <div className="cp-dialog__divider" />
-                <div className="cp-dialog__total-row">
-                  <span className="cp-dialog__total-label">Total</span>
-                  <span className="cp-dialog__total-value">${total.toFixed(2)}</span>
+                <div className="h-px bg-[rgba(201,168,76,0.12)]" />
+                <div className="flex justify-between text-sm font-bold">
+                  <span className="text-text-main">Total</span>
+                  <span className="text-gold font-serif-app">${total.toFixed(2)}</span>
                 </div>
               </div>
 
-              <div className="cp-dialog__note">
-                <strong>Pickup Information</strong>
-                <p>Please bring a valid ID showing you are 21+ when picking up your order within 48 hours.</p>
+              <div className="bg-[rgba(201,168,76,0.05)] border border-[rgba(201,168,76,0.12)] rounded-lg py-3 px-3.5 text-xs">
+                <strong className="block text-text-main mb-1 text-[13px]">Pickup Information</strong>
+                <p className="text-[#666] leading-[1.6]">Please bring a valid ID showing you are 21+ when picking up your order within 48 hours.</p>
               </div>
 
-              <div className="cp-dialog__footer">
+              <div className="flex gap-3 justify-end flex-wrap">
                 <button
                   type="button"
-                  className="cp-dialog__cancel"
+                  className="py-2.5 px-[22px] bg-transparent border border-[rgba(201,168,76,0.3)] text-gold text-[13px] font-semibold rounded-md cursor-pointer transition-all duration-[280ms] font-[inherit] hover:bg-[rgba(201,168,76,0.08)] hover:border-gold"
                   onClick={() => setCheckoutOpen(false)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="cp-dialog__confirm"
+                  className="py-2.5 px-6 bg-gradient-to-br from-gold to-gold-dark text-black text-[13px] font-bold border-none rounded-md cursor-pointer transition-all duration-[280ms] font-[inherit] tracking-[0.4px] hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:shadow-[0_4px_16px_rgba(201,168,76,0.3)] disabled:opacity-55 disabled:cursor-not-allowed"
                   disabled={isPending}
                 >
                   {isPending ? "Confirming…" : "Confirm Reservation"}
