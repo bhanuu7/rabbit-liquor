@@ -218,6 +218,33 @@ code {
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
   --variant-dark: (.dark &);
+
+  /* Custom app tokens */
+  --color-gold: #c9a84c;
+  --color-gold-light: #f0d080;
+  --color-gold-dark: #8b6914;
+  --color-bg-base: #080808;
+  --color-bg-card: #111111;
+  --color-bg-card2: #161616;
+  --color-text-main: #e5e5e5;
+  --color-text-muted-app: #888;
+  --color-text-dim: #555;
+  --color-cream: #f5f0e8;
+  --font-serif-app: 'Georgia', 'Times New Roman', serif;
+  --font-sans-app: 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+
+  /* Custom animations */
+  --animate-wsp-fill: wsp-fill 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  --animate-wsp-foam: wsp-foam 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  --animate-wsp-pulse: wsp-pulse 3.2s ease-in-out infinite;
+  --animate-wsp-bubble: wsp-bubble 1.7s ease-in infinite;
+  --animate-av-enter: av-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-lp-spin: lp-spin 0.7s linear infinite;
+  --animate-rl-float: rl-float-splash 6s ease-in-out infinite;
+  --animate-rl-pulse: rl-pulse 2s ease-in-out infinite;
+  --animate-rl-fadein: rl-fadein 0.25s ease;
+  --animate-pp-shimmer: pp-shimmer 1.4s ease infinite;
+  --animate-pp-dd-in: pp-dd-in 0.16s ease;
 }
 
 .dark {
@@ -264,4 +291,118 @@ code {
   html {
     @apply font-sans;
   }
+}
+
+/* ================================================================
+   KEYFRAMES — All custom animations
+   ================================================================ */
+
+/* WhiskeySpinner — beer fill */
+@keyframes wsp-fill {
+  0%   { transform: scaleY(0);    }
+  66%  { transform: scaleY(0.84); }
+  81%  { transform: scaleY(0.84); }
+  96%  { transform: scaleY(0);    }
+  100% { transform: scaleY(0);    }
+}
+
+/* WhiskeySpinner — foam */
+@keyframes wsp-foam {
+  0%   { transform: translateY(90px)  scaleY(0.05); opacity: 1;   }
+  66%  { transform: translateY(-21px) scaleY(1.0);  opacity: 1;   }
+  74%  { transform: translateY(-23px) scaleY(1.0);  opacity: 1;   }
+  80%  { transform: translateY(-21px) scaleY(1.0);  opacity: 1;   }
+  85%  { transform: translateY(-22px) scaleY(1.0);  opacity: 1;   }
+  90%  { transform: translateY(-21px) scaleY(1.0);  opacity: 1;   }
+  96%  { transform: translateY(90px)  scaleY(0.05); opacity: 0;   }
+  100% { transform: translateY(90px)  scaleY(0.05); opacity: 0;   }
+}
+
+/* WhiskeySpinner — bubbles */
+@keyframes wsp-bubble {
+  0%   { transform: translateY(0);      opacity: 0;    }
+  7%   { opacity: 0.85; }
+  82%  { transform: translateY(-118px); opacity: 0;    }
+  83%  { transform: translateY(0);      opacity: 0;    }
+  100% { transform: translateY(0);      opacity: 0;    }
+}
+
+/* WhiskeySpinner — label pulse */
+@keyframes wsp-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1;   }
+}
+
+/* AgeVerification — card entrance */
+@keyframes av-enter {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* LoginPage — button spinner */
+@keyframes lp-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* HomePage — hero splash float */
+@keyframes rl-float-splash {
+  0%   { transform: translateY(-50%) scale(1); }
+  50%  { transform: translateY(-52%) scale(1.02); }
+  100% { transform: translateY(-50%) scale(1); }
+}
+
+/* HomePage — hero pill pulse */
+@keyframes rl-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* HomePage — range card CTA fade */
+@keyframes rl-fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ProductsPage — skeleton shimmer */
+@keyframes pp-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* ProductsPage — dropdown entrance */
+@keyframes pp-dd-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ================================================================
+   UTILITY COMPONENTS — Complex patterns that can't be pure utilities
+   ================================================================ */
+
+/* Scrollbar hiding for carousels */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Thin gold scrollbar */
+.scrollbar-gold {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201,168,76,0.25) transparent;
+}
+.scrollbar-gold::-webkit-scrollbar { height: 3px; }
+.scrollbar-gold::-webkit-scrollbar-thumb {
+  background: rgba(201,168,76,0.25);
+  border-radius: 4px;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

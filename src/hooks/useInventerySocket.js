@@ -8,7 +8,7 @@ export const useInventorySocket = () => {
   useEffect(() => {
     // 🔥 Ensure socket is connected
     if (!socket.connected) {
-      socket.connect();
+     // socket.connect();
     }
     const handleUpdate = (data) => {
       const { productId, stock_count } = data;

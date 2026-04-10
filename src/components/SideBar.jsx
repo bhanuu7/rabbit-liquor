@@ -7,6 +7,7 @@ import {
   PackageCheck,
   Warehouse,
   BottleWine,
+  Wine,
 } from "lucide-react";
 import {
   Sidebar,
@@ -24,8 +25,11 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 const navItems = [
-  { title: "Products", url: "/home", icon: BottleWine },
-  { title: "Inventory", url: "/inventory", icon: Warehouse },
+  { title: "Home", url: "/home", icon: Home },
+  { title: "Products", url: "/products", icon: Wine },
+  { title: "Inventory", url: "/inventory", icon: Beer },
+  { title: "Customers", url: "/customers", icon: Users },
+  { title: "Settings", url: "/settings", icon: Settings },
   { title: "orders", url: "/orders", icon: PackageCheck },
 ];
 

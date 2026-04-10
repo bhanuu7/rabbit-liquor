@@ -22,15 +22,87 @@ import {
   DialogTitle,
 } from "../components/ui/dialog";
 import { toast } from "sonner";
-import {
-  ArrowLeft,
-  Trash2,
-  Plus,
-  Minus,
-  ShoppingCart,
-  Package,
-} from "lucide-react";
+import { ArrowLeft, Trash2, ShoppingCart, Package } from "lucide-react";
 import { reserveProduct } from "@/api/reserveProduct";
+import BottleSVG, { CATEGORY_FALLBACK } from "@/components/BottleSVG";
+
+function CartItem({ item, addToCart, removeFromCart }) {
+  const [imgError, setImgError] = useState(false);
+  const fallback =
+    CATEGORY_FALLBACK[item.product.category] || CATEGORY_FALLBACK.default;
+
+  return (
+    <div className="flex gap-4 py-5 px-6 transition-colors duration-200 not-last:border-b not-last:border-[rgba(201,168,76,0.08)] hover:bg-[rgba(255,255,255,0.015)]">
+      {/* Thumbnail */}
+      <div className="w-[88px] h-[88px] shrink-0 rounded-lg overflow-hidden border border-[rgba(201,168,76,0.15)] bg-[#0d0d0d]">
+        {!imgError && item.product.image_url ? (
+          <img
+            src={item.product.image_url}
+            alt={item.product.item_name}
+            className="w-full h-full object-cover block"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#131313] to-[#0d0d0d]">
+            <BottleSVG
+              color={fallback.color}
+              label={item.product.category.toUpperCase()}
+              isBeer={fallback.isBeer}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Details */}
+      <div className="flex-1 flex flex-col justify-between min-w-0">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <div className="text-sm font-semibold text-text-main font-serif-app leading-[1.3]">
+              {item.product.item_name}
+            </div>
+            <div className="text-[11px] text-text-dim mt-[3px]">
+              {item.product.volume || "750 ml"} ·{" "}
+              {item.product.alcoholContent || "40%"} ABV
+            </div>
+            <div className="text-[13px] font-semibold text-gold mt-1">
+              ${item.product.price}
+            </div>
+          </div>
+          <button
+            className="bg-transparent border-none cursor-pointer text-[#444] p-1 rounded flex items-center justify-center transition-colors duration-200 shrink-0 hover:text-[#c0392b]"
+            onClick={() => removeFromCart(item.product.id)}
+            aria-label="Remove item"
+          >
+            <Trash2 size={15} />
+          </button>
+        </div>
+
+        <div className="flex items-center justify-between mt-2.5">
+          <div className="flex items-center border border-[rgba(201,168,76,0.3)] rounded-md overflow-hidden">
+            <button
+              className="bg-transparent border-none text-gold w-8 h-8 text-base cursor-pointer flex items-center justify-center transition-colors duration-200 font-[inherit] leading-none hover:bg-[rgba(201,168,76,0.1)]"
+              onClick={() => removeFromCart(item.product)}
+            >
+              −
+            </button>
+            <span className="text-[13px] font-semibold text-text-main min-w-[36px] text-center">
+              {item.quantity}
+            </span>
+            <button
+              className="bg-transparent border-none text-gold w-8 h-8 text-base cursor-pointer flex items-center justify-center transition-colors duration-200 font-[inherit] leading-none hover:bg-[rgba(201,168,76,0.1)]"
+              onClick={() => addToCart(item.product)}
+            >
+              +
+            </button>
+          </div>
+          <span className="text-[15px] font-bold text-gold font-serif-app">
+            ${item.product.price * item.quantity}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function CartPage() {
   const navigate = useNavigate();
@@ -42,231 +114,200 @@ function CartPage() {
     email: "",
     phone: "",
   });
+  const { addReservation } = useStore();
 
   const subtotal = 6969;
-  // TO DO getCartTotal();
-  const tax = subtotal * 0.08; // 8% tax
+  const tax = subtotal * 0.08;
   const total = subtotal + tax;
 
   const handleCheckout = (e) => {
     e.preventDefault();
-
     const items = Object.values(cartProducts).map((item) => ({
       productId: item.product.id,
       quantity: item.quantity,
     }));
-    const payload = {
+    mutate({
       user_name: "Bhanu",
       email: formData.email,
       phone: formData.phone,
       customer_name: formData.name,
       total_price: 2340,
       items,
-    };
-    mutate({ ...payload });
-    setFormData({ name: "", email: "", phone: "" });
+    });
     toast.success("Reservation confirmed!", {
       description: `We've sent a confirmation email to ${formData.email}. Please pick up within 48 hours.`,
     });
-
-    clearCart();
+    setFormData({ name: "", email: "", phone: "" });
     setCheckoutOpen(false);
     navigate("/home");
   };
 
+  /* ── Empty state ─────────────────────────────────────────── */
   if (!cartProducts || Object.keys(cartProducts).length === 0) {
     return (
-      <div className="min-h-screen bg-background">
-        {/* Empty State */}
-        <main className="container mx-auto px-4 py-16">
-          <div className="flex flex-col items-center justify-center text-center">
-            <div className="mb-6 flex size-24 items-center justify-center rounded-full bg-muted">
-              <ShoppingCart className="size-12 text-muted-foreground" />
-            </div>
-            <h2 className="mb-2 text-2xl">Your cart is empty</h2>
-            <p className="mb-6 text-muted-foreground">
-              Add some products to your cart to get started
-            </p>
-            <Button onClick={() => navigate("/home")}>Continue Shopping</Button>
+      <div className="min-h-screen bg-bg-base text-text-main font-sans-app">
+        <div className="flex flex-col items-center justify-center min-h-[380px] gap-3.5 text-center">
+          <div className="w-[88px] h-[88px] rounded-full bg-[rgba(201,168,76,0.06)] border border-[rgba(201,168,76,0.18)] flex items-center justify-center text-[#444]">
+            <ShoppingCart size={40} />
           </div>
-        </main>
+          <h2 className="text-[22px] font-bold text-[#888] font-serif-app">
+            Your cart is empty
+          </h2>
+          <p className="text-[13px] text-text-dim leading-[1.6] max-w-[280px]">
+            Add some products to your cart to get started
+          </p>
+          <button
+            className="inline-flex items-center justify-center gap-2 py-3 px-7 bg-gradient-to-br from-gold to-gold-dark text-black text-[13px] font-bold tracking-[0.8px] uppercase border-none rounded-md cursor-pointer transition-all duration-[280ms] font-[inherit] mt-1.5 hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:shadow-[0_6px_20px_rgba(201,168,76,0.3)]"
+            onClick={() => navigate("/products")}
+          >
+            Continue Shopping
+          </button>
+        </div>
       </div>
     );
   }
 
+  /* ── Filled cart ─────────────────────────────────────────── */
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Cart Items */}
-          <div className="space-y-4 lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Cart Items</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {Object.values(cartProducts).map((item, index) => (
-                  <div key={item.product.id}>
-                    {index > 0 && <Separator className="my-4" />}
-                    <div className="flex gap-4">
-                      {/* Product Image */}
-                      <div className="relative size-24 shrink-0 overflow-hidden rounded-lg bg-muted">
-                        <img
-                          src={item.product.image_url}
-                          alt={item.product.name}
-                          className="size-full object-cover"
-                        />
-                      </div>
+    <div className="min-h-screen bg-bg-base text-text-main font-sans-app">
+      {/* Page header */}
+      <div className="mb-8 pb-6 border-b border-[rgba(201,168,76,0.15)] flex items-center gap-4">
+        <button
+          className="inline-flex items-center gap-[7px] bg-transparent border border-[rgba(201,168,76,0.3)] text-gold text-xs tracking-[0.6px] uppercase py-2 px-4 rounded-full cursor-pointer transition-all duration-[280ms] font-[inherit] hover:bg-[rgba(201,168,76,0.08)] hover:border-gold"
+          onClick={() => navigate("/products")}
+        >
+          <ArrowLeft size={13} />
+          Back
+        </button>
+        <div className="flex-1">
+          <p className="text-[10px] tracking-[4px] uppercase text-gold opacity-85 mb-1">
+            Your Selection
+          </p>
+          <h1 className="text-[clamp(22px,3vw,32px)] font-bold text-white font-serif-app leading-[1.2]">
+            Your <em className="text-gold italic">Cart</em>
+          </h1>
+        </div>
+      </div>
 
-                      {/* Product Details */}
-                      <div className="flex flex-1 flex-col justify-between">
-                        <div>
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-start flex-col">
-                              <h3 className="font-medium">
-                                {item.product.item_name}
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                750 ml • {/* TO DO */}
-                                {item.product.alcoholContent || 49} ABV
-                              </p>
-                              <p className="mt-1 font-medium">
-                                ${item.product.price}
-                              </p>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeFromCart(item.product.id)}
-                              className="shrink-0"
-                            >
-                              <Trash2 className="size-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </div>
-
-                        {/* Quantity Controls */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="size-8"
-                              onClick={() => removeFromCart(item.product)}
-                            >
-                              <Minus className="size-3" />
-                            </Button>
-                            <span className="w-12 text-center font-medium">
-                              {item.quantity}
-                            </span>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="size-8"
-                              onClick={() => addToCart(item.product)}
-                              // TO DO  disabled={item.quantity >= item.product.stock}
-                            >
-                              <Plus className="size-3" />
-                            </Button>
-                          </div>
-                          <p className="font-medium">
-                            ${item.product.price * item.quantity}
-                          </p>
-                        </div>
-
-                        {/* Stock Warning */}
-                        {/* TO DO {item.quantity >= item.product.stock && (
-                          <p className="mt-1 text-xs text-destructive">
-                            Maximum available quantity
-                          </p>
-                        )} */}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+      <div className="grid gap-7 lg:grid-cols-[1fr_minmax(300px,360px)] lg:items-start">
+        {/* ── Cart items panel ── */}
+        <div className="bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-xl overflow-hidden">
+          <div className="py-5 px-6 border-b border-[rgba(201,168,76,0.12)]">
+            <h2 className="text-[15px] font-bold text-white font-serif-app tracking-[0.5px]">
+              Cart Items
+            </h2>
           </div>
-
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-24">
-              <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Price Breakdown */}
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span>${subtotal}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Tax (8%)</span>
-                    <span>${tax}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <span className="font-medium">Total</span>
-                    <span className="text-2xl font-medium">${total}</span>
-                  </div>
-                </div>
-
-                {/* Info Box */}
-                <div className="rounded-lg bg-muted p-4 text-sm">
-                  <div className="flex gap-2">
-                    <Package className="size-5 shrink-0 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">Store Pickup Only</p>
-                      <p className="text-muted-foreground">
-                        Ready for pickup within 2 hours. Valid ID required
-                        (21+).
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={() => setCheckoutOpen(true)}
-                >
-                  Reserve for Pickup
-                </Button>
-              </CardFooter>
-            </Card>
+          <div className="py-2">
+            {Object.values(cartProducts).map((item) => (
+              <CartItem
+                key={item.product.id}
+                item={item}
+                addToCart={addToCart}
+                removeFromCart={removeFromCart}
+              />
+            ))}
           </div>
         </div>
-      </main>
 
-      {/* Checkout Dialog */}
-      <Dialog open={checkoutOpen} onOpenChange={setCheckoutOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Complete Your Reservation</DialogTitle>
-            <DialogDescription>
-              Enter your details to reserve your items for pickup
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleCheckout}>
-            <div className="space-y-4 py-4">
+        {/* ── Order summary panel ── */}
+        <div className="bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-xl overflow-hidden sticky top-[88px]">
+          <div className="py-5 px-6 border-b border-[rgba(201,168,76,0.12)]">
+            <h2 className="text-[15px] font-bold text-white font-serif-app tracking-[0.5px]">
+              Order Summary
+            </h2>
+          </div>
+          <div className="p-6 flex flex-col gap-3.5">
+            <div className="flex justify-between items-center text-[13px]">
+              <span className="text-[#666]">Subtotal</span>
+              <span className="text-text-main">${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center text-[13px]">
+              <span className="text-[#666]">Tax (8%)</span>
+              <span className="text-text-main">${tax.toFixed(2)}</span>
+            </div>
+            <div className="h-px bg-[rgba(201,168,76,0.12)] my-1" />
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm font-semibold text-text-main">
+                Total
+              </span>
+              <span className="text-[26px] font-bold text-gold font-serif-app leading-none">
+                ${total.toFixed(2)}
+              </span>
+            </div>
+
+            {/* Pickup info */}
+            <div className="flex gap-3 bg-[rgba(201,168,76,0.05)] border border-[rgba(201,168,76,0.15)] rounded-lg py-3.5 px-4">
+              <Package size={18} className="text-gold shrink-0 mt-px" />
               <div>
-                <Label htmlFor="checkout-name">Full Name</Label>
-                <Input
-                  id="checkout-name"
+                <div className="text-[13px] font-semibold text-text-main mb-1">
+                  Store Pickup Only
+                </div>
+                <div className="text-xs text-[#666] leading-[1.65]">
+                  Ready for pickup within 2 hours. Valid ID required (21+).
+                </div>
+              </div>
+            </div>
+
+            <button
+              className="flex items-center justify-center w-full py-3.5 bg-gradient-to-br from-gold to-gold-dark text-black text-[13px] font-bold tracking-[1px] uppercase border-none rounded-md cursor-pointer transition-all duration-[280ms] font-[inherit] hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:shadow-[0_6px_20px_rgba(201,168,76,0.3)]"
+              onClick={() => setCheckoutOpen(true)}
+            >
+              Reserve for Pickup
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Checkout dialog ── */}
+      {checkoutOpen && (
+        <div
+          className="fixed inset-0 bg-[rgba(0,0,0,0.75)] z-[9000] flex items-center justify-center p-6"
+          onClick={() => setCheckoutOpen(false)}
+        >
+          <div
+            className="bg-bg-card border border-[rgba(201,168,76,0.25)] rounded-[14px] w-full max-w-[480px] max-h-[90vh] overflow-y-auto p-8 flex flex-col gap-[22px] relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div>
+              <h2 className="text-xl font-bold text-white font-serif-app">
+                Complete Your Reservation
+              </h2>
+              <p className="text-[13px] text-[#666] mt-1 leading-[1.6]">
+                Enter your details to reserve your items for pickup
+              </p>
+            </div>
+
+            <form
+              onSubmit={handleCheckout}
+              style={{ display: "flex", flexDirection: "column", gap: 16 }}
+            >
+              <div className="flex flex-col gap-[7px]">
+                <label
+                  htmlFor="cp-name"
+                  className="text-[11px] tracking-[1.5px] uppercase text-[#888] font-[inherit]"
+                >
+                  Full Name
+                </label>
+                <input
+                  id="cp-name"
                   required
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                   placeholder="John Doe"
+                  className="bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-md py-[11px] px-3.5 text-[13px] text-text-main outline-none transition-all duration-[280ms] font-[inherit] placeholder:text-[#444] focus:border-gold focus:bg-[rgba(255,255,255,0.06)]"
                 />
               </div>
-              <div>
-                <Label htmlFor="checkout-email">Email</Label>
-                <Input
-                  id="checkout-email"
+              <div className="flex flex-col gap-[7px]">
+                <label
+                  htmlFor="cp-email"
+                  className="text-[11px] tracking-[1.5px] uppercase text-[#888] font-[inherit]"
+                >
+                  Email
+                </label>
+                <input
+                  id="cp-email"
                   type="email"
                   required
                   value={formData.email}
@@ -274,12 +315,18 @@ function CartPage() {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   placeholder="john@example.com"
+                  className="bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-md py-[11px] px-3.5 text-[13px] text-text-main outline-none transition-all duration-[280ms] font-[inherit] placeholder:text-[#444] focus:border-gold focus:bg-[rgba(255,255,255,0.06)]"
                 />
               </div>
-              <div>
-                <Label htmlFor="checkout-phone">Phone Number</Label>
-                <Input
-                  id="checkout-phone"
+              <div className="flex flex-col gap-[7px]">
+                <label
+                  htmlFor="cp-phone"
+                  className="text-[11px] tracking-[1.5px] uppercase text-[#888] font-[inherit]"
+                >
+                  Phone Number
+                </label>
+                <input
+                  id="cp-phone"
                   type="tel"
                   required
                   value={formData.phone}
@@ -287,47 +334,59 @@ function CartPage() {
                     setFormData({ ...formData, phone: e.target.value })
                   }
                   placeholder="(555) 123-4567"
+                  className="bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-md py-[11px] px-3.5 text-[13px] text-text-main outline-none transition-all duration-[280ms] font-[inherit] placeholder:text-[#444] focus:border-gold focus:bg-[rgba(255,255,255,0.06)]"
                 />
               </div>
 
-              {/* Order Summary in Dialog */}
-              <div className="rounded-lg border p-4">
-                <div className="mb-2 flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span>${subtotal}</span>
+              {/* Mini order summary */}
+              <div className="bg-[rgba(201,168,76,0.04)] border border-[rgba(201,168,76,0.15)] rounded-lg p-4 flex flex-col gap-2">
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-[#666]">Subtotal</span>
+                  <span className="text-text-main">${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="mb-2 flex justify-between text-sm">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span>${tax}</span>
+                <div className="flex justify-between text-[13px]">
+                  <span className="text-[#666]">Tax (8%)</span>
+                  <span className="text-text-main">${tax.toFixed(2)}</span>
                 </div>
-                <Separator className="my-2" />
-                <div className="flex justify-between font-medium">
-                  <span>Total</span>
-                  <span>${total}</span>
+                <div className="h-px bg-[rgba(201,168,76,0.12)]" />
+                <div className="flex justify-between text-sm font-bold">
+                  <span className="text-text-main">Total</span>
+                  <span className="text-gold font-serif-app">
+                    ${total.toFixed(2)}
+                  </span>
                 </div>
               </div>
 
-              <div className="rounded-lg bg-muted p-3 text-sm">
-                <p className="font-medium">Pickup Information</p>
-                <p className="text-muted-foreground">
+              <div className="bg-[rgba(201,168,76,0.05)] border border-[rgba(201,168,76,0.12)] rounded-lg py-3 px-3.5 text-xs">
+                <strong className="block text-text-main mb-1 text-[13px]">
+                  Pickup Information
+                </strong>
+                <p className="text-[#666] leading-[1.6]">
                   Please bring a valid ID showing you are 21+ when picking up
                   your order within 48 hours.
                 </p>
               </div>
-            </div>
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setCheckoutOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">Confirm Reservation</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+
+              <div className="flex gap-3 justify-end flex-wrap">
+                <button
+                  type="button"
+                  className="py-2.5 px-[22px] bg-transparent border border-[rgba(201,168,76,0.3)] text-gold text-[13px] font-semibold rounded-md cursor-pointer transition-all duration-[280ms] font-[inherit] hover:bg-[rgba(201,168,76,0.08)] hover:border-gold"
+                  onClick={() => setCheckoutOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="py-2.5 px-6 bg-gradient-to-br from-gold to-gold-dark text-black text-[13px] font-bold border-none rounded-md cursor-pointer transition-all duration-[280ms] font-[inherit] tracking-[0.4px] hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:shadow-[0_4px_16px_rgba(201,168,76,0.3)] disabled:opacity-55 disabled:cursor-not-allowed"
+                  disabled={isPending}
+                >
+                  {isPending ? "Confirming…" : "Confirm Reservation"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
