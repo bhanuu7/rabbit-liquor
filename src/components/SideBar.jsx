@@ -1,4 +1,4 @@
-import { Home, Beer, Settings, Users, LogOut } from "lucide-react";
+import { Home, Beer, Settings, Users, LogOut, Wine } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "Dashboard", url: "/home", icon: Home },
+  { title: "Home", url: "/home", icon: Home },
+  { title: "Products", url: "/products", icon: Wine },
   { title: "Inventory", url: "/inventory", icon: Beer },
   { title: "Customers", url: "/customers", icon: Users },
   { title: "Settings", url: "/settings", icon: Settings },

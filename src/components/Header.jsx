@@ -12,20 +12,22 @@ import { Wine, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import CartIcon from "./ShoppingCart";
 import { useCart } from "@/context/CartContext";
-export default function Header({ title, count = 3 }) {
+export default function Header() {
   const { theme, setTheme } = useTheme();
   const { getCartCount } = useCart();
   return (
-    <div className="w-full sticky">
-      <div className=" flex items-center justify-between">
+    <div className="rl-header w-full">
+      <div className="flex items-center justify-between px-4">
         <div className="flex items-center gap-2 h-16">
-          <Wine className="size-8 text-primary" />
-          <h1 className="text-xl !text-foreground">Rabbit Liquor</h1>
+          <Wine className="size-7 rl-brand-icon" />
+          <h1 className="rl-brand-title">Rabbit Liquor</h1>
         </div>
 
         {/* Right Side: Profile Dropdown */}
         <div className="flex items-center gap-x-4">
-          <CartIcon count={getCartCount()} />
+          <span className="rl-cart-icon">
+            <CartIcon count={getCartCount()} />
+          </span>
           <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

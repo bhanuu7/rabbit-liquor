@@ -9,7 +9,7 @@ export const useInventorySocket = () => {
   useEffect(() => {
     // 🔥 Ensure socket is connected
     if (!socket.connected) {
-      socket.connect();
+     // socket.connect();
     }
 
     // 🔥 DEBUG: Listen to ALL events

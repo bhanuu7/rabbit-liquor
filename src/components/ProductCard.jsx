@@ -1,93 +1,86 @@
-import { Card, CardContent, CardFooter } from "./ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { ShoppingCart, Bell } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import BottleSVG, { CATEGORY_FALLBACK } from "@/components/BottleSVG";
+import "./ProductCard.css";
 
 export function ProductCard({ product, onNotifyMe }) {
   const isOutOfStock = product.stock_count === 0;
   const isLowStock = product.stock_count > 0 && product.stock_count <= 3;
   const { getProductCount, removeFromCart, addToCart } = useCart();
   const currentProductCount = getProductCount(product.id);
+  const [imgError, setImgError] = useState(false);
+  const fallback = CATEGORY_FALLBACK[product.category] || CATEGORY_FALLBACK.default;
+
   return (
-    <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
-      <div className="relative aspect-[3/4] overflow-hidden bg-muted">
-        <img
-          src={product.image_url}
-          alt={product.item_name}
-          className="size-full object-cover transition-transform group-hover:scale-105"
-        />
+    <div className="rl-pc">
+      {/* Image */}
+      <div className="rl-pc__img">
+        {!imgError && product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.item_name}
+            className="rl-pc__photo"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="rl-pc__bottle-fallback">
+            <BottleSVG
+              color={fallback.color}
+              label={product.category.toUpperCase()}
+              isBeer={fallback.isBeer}
+            />
+          </div>
+        )}
+        <span className="rl-pc__cat">{product.category}</span>
         {isOutOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-            <Badge variant="destructive" className="text-lg">
-              Out of Stock
-            </Badge>
+          <div className="rl-pc__oos-overlay">
+            <span>Out of Stock</span>
           </div>
         )}
         {isLowStock && !isOutOfStock && (
-          <Badge variant="secondary" className="absolute right-2 top-2">
-            Only {product.stock_count} left
-          </Badge>
+          <span className="rl-pc__low-badge">Only {product.stock_count} left</span>
         )}
       </div>
-      <CardContent className="p-4">
-        <div className="mb-2 flex items-start justify-between">
-          <div>
-            <Badge variant="outline" className="mb-2">
-              {product.category}
-            </Badge>
-            <h3 className="line-clamp-2">{product.item_name}</h3>
-          </div>
-        </div>
-        <p className="mb-2 text-sm text-muted-foreground line-clamp-2">
-          {product.description}
-        </p>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+
+      {/* Body */}
+      <div className="rl-pc__body">
+        <h3 className="rl-pc__name">{product.item_name}</h3>
+        <p className="rl-pc__desc">{product.description}</p>
+        <div className="rl-pc__meta">
           <span>{product.volume}</span>
-          <span>•</span>
+          <span>·</span>
           <span>{product.alcoholContent} ABV</span>
         </div>
-        <div className="mt-3">
-          <span className="text-2xl">${product.price}</span>
-        </div>
-      </CardContent>
-      <CardFooter className="p-4 pt-0">
+        <div className="rl-pc__price">${product.price}</div>
+      </div>
+
+      {/* Footer CTA */}
+      <div className="rl-pc__footer">
         {isOutOfStock ? (
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => onNotifyMe(product)}
+          <button
+            className="rl-pc__btn rl-pc__btn--outline"
+            onClick={() => onNotifyMe?.(product)}
           >
-            <Bell className="mr-2 size-4" />
+            <Bell size={14} />
             Notify When Available
-          </Button>
+          </button>
         ) : currentProductCount === 0 ? (
-          <Button className="w-full" onClick={() => addToCart(product)}>
-            <ShoppingCart className="mr-2 size-4" />
+          <button
+            className="rl-pc__btn rl-pc__btn--gold"
+            onClick={() => addToCart(product)}
+          >
+            <ShoppingCart size={14} />
             Add To Cart
-          </Button>
+          </button>
         ) : (
-          <div className="w-full flex items-center justify-between rounded-md border px-2 py-1 bg-background">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => removeFromCart(product)}
-            >
-              -
-            </Button>
-
-            <span className="font-medium">{currentProductCount}</span>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => addToCart(product)}
-            >
-              +
-            </Button>
+          <div className="rl-pc__qty">
+            <button className="rl-pc__qty-btn" onClick={() => removeFromCart(product)}>−</button>
+            <span className="rl-pc__qty-count">{currentProductCount}</span>
+            <button className="rl-pc__qty-btn" onClick={() => addToCart(product)}>+</button>
           </div>
         )}
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }

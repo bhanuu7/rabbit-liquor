@@ -1,74 +1,85 @@
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
+import { Wine } from "lucide-react";
+import "./LoginPage.css";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const handleLogin = () => {
+
+  const handleLogin = (e) => {
+    e.preventDefault();
     setIsLoading(true);
     // Login API
     setIsLoading(false);
     navigate("/home");
   };
   return (
-    <div className="h-screen flex items-center justify-center w-full">
-      <div className="w-full max-w-[350px]">
-        <Card className="shadow-2xl">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">
-              Welcome To Rabbit Liquor 🍷
-            </CardTitle>
-            <p className="text-sm text-gray-500 text-center">
-              Login to your account
-            </p>
-          </CardHeader>
+    <div className="lp-shell">
+      <div className="lp-card">
+        {/* Brand */}
+        <div className="lp-brand">
+          <div className="lp-brand__icon">
+            <Wine size={26} />
+          </div>
+          <p className="lp-brand__pre">Premium Spirits</p>
+          <h1 className="lp-brand__title">
+            Welcome to <em>Rabbit Liquor</em>
+          </h1>
+          <p className="lp-brand__sub">Sign in to access your account</p>
+        </div>
 
-          <CardContent>
-            <form className="space-y-4">
-              <div className="space-y-2">
-                <Label>Email</Label>
-                <Input type="email" placeholder="Enter your email" />
-              </div>
-              <div className="space-y-2">
-                <Label>Password</Label>
-                <Input type="password" placeholder="Enter your password" />
-              </div>
-              {/* <Button
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:opacity-90"
-                onClick={handleLogin}
-              >
-                Login
-              </Button> */}
-              <Button
-                type="submit"
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:opacity-90"
-                onClick={handleLogin}
-              >
-                {isLoading ? (
-                  <>
-                    <Spinner data-icon="inline-start" />
-                    Logging in...
-                  </>
-                ) : (
-                  "Login"
-                )}
-              </Button>
-            </form>
+        <div className="lp-divider" />
 
-            <p className="text-center text-sm text-gray-500">
-              Don’t have an account?{" "}
-              <span className="text-purple-600 cursor-pointer hover:underline">
-                Sign up
-              </span>
-            </p>
-          </CardContent>
-        </Card>
+        {/* Form */}
+        <form className="lp-form" onSubmit={handleLogin}>
+          <div className="lp-field">
+            <label htmlFor="lp-email">Email</label>
+            <input
+              id="lp-email"
+              type="email"
+              required
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+          </div>
+
+          <div className="lp-field">
+            <label htmlFor="lp-password">Password</label>
+            <input
+              id="lp-password"
+              type="password"
+              required
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            />
+          </div>
+
+          <button type="submit" className="lp-submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <span className="lp-spinner" />
+                Signing in…
+              </>
+            ) : (
+              "Sign In"
+            )}
+          </button>
+        </form>
+
+        {/* Footer */}
+        <p className="lp-footer">
+          Don&apos;t have an account?{" "}
+          <button type="button" className="lp-footer__link">
+            Sign up
+          </button>
+        </p>
       </div>
     </div>
   );
 }
+
+
