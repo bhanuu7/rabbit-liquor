@@ -1,18 +1,20 @@
-import { useState } from "react";
-import HomePage from "./pages/HomePage";
-import ProductsPage from "./pages/ProductsPage";
+import { useState, lazy, Suspense } from "react";
 import LoginPage from "./pages/LoginPage";
-import Inventory from "./pages/Inventory";
 import { StoreProvider } from "./context/StoreContext";
 import { CartProvider } from "./context/CartContext";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppLayout from "./AppLayout";
-import CartPage from "./pages/CartPage";
 import { Amplify } from "aws-amplify";
-import OrdersPage from "./pages/OrdersPage";
 import AgeVerification from "./components/AgeVerification";
+import WhiskeySpinner from "./components/WhiskeySpinner";
+
+const HomePage = lazy(() => import("./pages/HomePage"));
+const ProductsPage = lazy(() => import("./pages/ProductsPage"));
+const Inventory = lazy(() => import("./pages/Inventory"));
+const CartPage = lazy(() => import("./pages/CartPage"));
+const OrdersPage = lazy(() => import("./pages/OrdersPage"));
 
 Amplify.configure({
   Auth: {
@@ -43,21 +45,31 @@ function App() {
         <TooltipProvider>
           <StoreProvider>
             <CartProvider>
-              <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route element={<AppLayout />}>
-                  <Route path="/home" element={<HomePage />} />
-                  <Route path="/products" element={<ProductsPage />} />
-                  <Route path="/inventory" element={<Inventory />} />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route path="/orders" element={<OrdersPage />} />
-                </Route>
-              </Routes>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<LoginPage />} />
+                  <Route element={<AppLayout />}>
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/products" element={<ProductsPage />} />
+                    <Route path="/inventory" element={<Inventory />} />
+                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/orders" element={<OrdersPage />} />
+                  </Route>
+                </Routes>
+              </Suspense>
             </CartProvider>
           </StoreProvider>
         </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>
+  );
+}
+
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-svh bg-bg-base">
+      <WhiskeySpinner size={100} label="Loading…" />
+    </div>
   );
 }
 

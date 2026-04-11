@@ -6,6 +6,7 @@ import { useCart } from "@/context/CartContext";
 import { ProductCard } from "@/components/ProductCard";
 import { reserveProduct } from "@/api/reserveProduct";
 import { products } from "@/utils";
+import WhiskeySpinner from "@/components/WhiskeySpinner";
 
 const PAGE_SIZE = 12;
 const BATCH_SIZE = 8;
@@ -89,6 +90,14 @@ const ProductsPage = () => {
     console.log("handle notify me");
   };
 
+  if (isLoading) {
+    return (
+      <div className="w-full flex items-center justify-center min-h-[60vh]">
+        <WhiskeySpinner size={100} label="Loading products…" />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full flex flex-col">
       {/* Page header */}
@@ -159,9 +168,11 @@ const ProductsPage = () => {
                 onNotifyMe={handleNotifyMe}
               />
             ))}
-            {loadingMore && Array.from({ length: 4 }).map((_, i) => (
-              <div key={`skel-${i}`} className="bg-bg-card border border-[rgba(201,168,76,0.1)] rounded-[10px] aspect-[4/3] relative overflow-hidden after:content-[''] after:absolute after:inset-0 after:bg-[linear-gradient(90deg,transparent_0%,rgba(201,168,76,0.08)_50%,transparent_100%)] after:[background-size:200%_100%] after:animate-pp-shimmer" />
-            ))}
+            {loadingMore && (
+              <div className="col-span-full flex justify-center py-8">
+                <WhiskeySpinner size={64} label="Loading more…" />
+              </div>
+            )}
           </div>
           {hasMore && <div ref={sentinelRef} className="h-10 w-full" />}
         </>
