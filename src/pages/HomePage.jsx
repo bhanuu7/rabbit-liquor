@@ -14,7 +14,7 @@ import {
 import { reserveProduct } from "@/api/reserveProduct";
 import { useInventorySocket } from "@/hooks/useInventerySocket";
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import designerImg from "../assets/designer2.png";
 import BottleSVG, { CATEGORY_FALLBACK } from "@/components/BottleSVG";
 import { products as REAL_PRODUCTS } from "@/utils";
@@ -657,144 +657,6 @@ const REVIEWS = [
 ];
 
 /* ================================================================
-   NAVBAR
-   ================================================================ */
-
-function Navbar({ onNavigate, currentPage }) {
-  const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [cartCount] = useState(0);
-
-  const goHome = (hash = "") => {
-    onNavigate("home");
-    setTimeout(() => {
-      if (hash)
-        document.querySelector(hash)?.scrollIntoView({ behavior: "smooth" });
-    }, 50);
-  };
-
-  return (
-    <nav className="sticky top-0 z-[1000] grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-7 h-[70px] bg-[rgba(6,6,6,0.96)] backdrop-blur-[24px] border-b border-[rgba(201,168,76,0.18)] max-lg:px-5 max-lg:h-16 max-lg:gap-2.5">
-      {/* LEFT */}
-      <div className="flex items-center gap-7 min-w-0">
-        <button
-          onClick={() => goHome()}
-          className="flex items-center gap-2.5 no-underline shrink-0 bg-transparent border-none cursor-pointer p-0 font-sans-app"
-        >
-          <RabbitLogo size={40} />
-          <span className="text-[17px] font-bold text-gold font-serif-app tracking-[0.8px] whitespace-nowrap max-[480px]:text-sm">
-            Rabbit Liquor
-          </span>
-        </button>
-        <div
-          className={`flex items-center gap-1 max-lg:hidden max-lg:fixed max-lg:top-16 max-lg:left-0 max-lg:right-0 max-lg:bg-[rgba(6,6,6,0.98)] max-lg:p-[18px_24px] max-lg:flex-col max-lg:items-start max-lg:border-b max-lg:border-[rgba(201,168,76,0.18)] max-lg:z-[999] ${menuOpen ? "max-lg:!flex" : ""}`}
-        >
-          <button
-            onClick={() => {
-              goHome();
-              setMenuOpen(false);
-            }}
-            className={`text-[#888] no-underline text-[13px] tracking-[1px] uppercase py-1.5 px-[13px] rounded-md transition-all duration-[280ms] bg-transparent border-none cursor-pointer font-sans-app hover:text-gold hover:bg-[rgba(201,168,76,0.07)] ${currentPage === "home" ? "text-gold bg-[rgba(201,168,76,0.07)]" : ""}`}
-          >
-            Home
-          </button>
-          <button
-            onClick={() => {
-              goHome("#range");
-              setMenuOpen(false);
-            }}
-            className="text-[#888] no-underline text-[13px] tracking-[1px] uppercase py-1.5 px-[13px] rounded-md transition-all duration-[280ms] bg-transparent border-none cursor-pointer font-sans-app hover:text-gold hover:bg-[rgba(201,168,76,0.07)]"
-          >
-            Reserve
-          </button>
-          <button
-            onClick={() => {
-              onNavigate("story");
-              setMenuOpen(false);
-            }}
-            className={`text-[#888] no-underline text-[13px] tracking-[1px] uppercase py-1.5 px-[13px] rounded-md transition-all duration-[280ms] bg-transparent border-none cursor-pointer font-sans-app hover:text-gold hover:bg-[rgba(201,168,76,0.07)] ${currentPage === "story" ? "text-gold bg-[rgba(201,168,76,0.07)]" : ""}`}
-          >
-            About Us
-          </button>
-        </div>
-      </div>
-
-      {/* CENTER */}
-      <div className="flex justify-center max-lg:hidden">
-        <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-full py-2 px-[18px] w-[300px] transition-all duration-[280ms] focus-within:border-gold focus-within:bg-[rgba(255,255,255,0.06)]">
-          <svg
-            className="w-[15px] h-[15px] text-gold shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search spirits, wines…"
-            className="bg-transparent border-none outline-none text-text-main text-[13px] font-sans-app w-full placeholder:text-text-dim"
-            aria-label="Search"
-          />
-        </div>
-      </div>
-
-      {/* RIGHT */}
-      <div className="flex items-center justify-end gap-2.5">
-        <button
-          className="relative bg-transparent border border-[rgba(201,168,76,0.28)] text-gold w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-[280ms] shrink-0 hover:bg-[rgba(201,168,76,0.1)] hover:border-gold"
-          aria-label="Cart"
-          onClick={() => navigate("/cart")}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            width="20"
-            height="20"
-          >
-            <circle cx="9" cy="21" r="1" />
-            <circle cx="20" cy="21" r="1" />
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-          </svg>
-          {cartCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-gold text-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-              {cartCount}
-            </span>
-          )}
-        </button>
-        <button
-          className="inline-flex items-center justify-center gap-1.5 py-[9px] px-5 text-[13px] font-semibold tracking-[0.6px] rounded-md cursor-pointer transition-all duration-[280ms] whitespace-nowrap border border-gold bg-transparent text-gold hover:bg-[rgba(201,168,76,0.08)] hover:-translate-y-px"
-          onClick={() => navigate("/")}
-        >
-          Sign In
-        </button>
-        <button
-          className="inline-flex items-center justify-center gap-1.5 py-[9px] px-5 text-[13px] font-semibold tracking-[0.6px] rounded-md cursor-pointer transition-all duration-[280ms] whitespace-nowrap border-none bg-gradient-to-br from-gold to-gold-dark text-black hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:-translate-y-px hover:shadow-[0_6px_20px_rgba(201,168,76,0.3)]"
-          onClick={() => navigate("/")}
-        >
-          Sign Up
-        </button>
-        <button
-          className={`hidden max-lg:flex flex-col gap-[5px] bg-transparent border-none cursor-pointer p-1 ${menuOpen ? "active" : ""}`}
-          onClick={() => setMenuOpen((o) => !o)}
-          aria-label="Toggle menu"
-          aria-expanded={menuOpen}
-        >
-          <span className="block w-[22px] h-0.5 bg-gold rounded-sm transition-all duration-300" />
-          <span className="block w-[22px] h-0.5 bg-gold rounded-sm transition-all duration-300" />
-          <span className="block w-[22px] h-0.5 bg-gold rounded-sm transition-all duration-300" />
-        </button>
-      </div>
-    </nav>
-  );
-}
-
-/* ================================================================
    HERO SECTION
    ================================================================ */
 
@@ -802,77 +664,61 @@ function HeroSection() {
   const navigate = useNavigate();
   const scrollToRange = () =>
     document.getElementById("range")?.scrollIntoView({ behavior: "smooth" });
+  const scrollToTrending = () =>
+    document.getElementById("trending")?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <section
-      className="relative min-h-[56vh] flex items-center overflow-hidden bg-black border-b border-[rgba(201,168,76,0.18)] max-md:min-h-auto max-md:items-start"
-      id="home"
-    >
-      <div
-        className="absolute right-[12%] top-1/2 -translate-y-1/2 w-[min(48vw,420px)] pointer-events-none z-[2] animate-rl-float max-lg:opacity-100 max-lg:right-[8%] max-lg:w-[min(40vw,420px)] max-md:opacity-90 max-md:right-[4%] max-md:w-[min(40vw,320px)] max-[480px]:opacity-80 max-[480px]:right-0 max-[480px]:w-[min(40vw,240px)]"
-        aria-hidden="true"
-      >
+    <section className="rl-hero" id="home">
+      <div className="rl-hero-splash-wrap" aria-hidden="true">
         <img
           src={designerImg}
           alt="Premium Whiskey Splash"
-          className="w-full h-auto block"
+          className="rl-hero-splash-img"
         />
       </div>
 
-      <div className="relative z-10 py-[52px] px-16 max-w-[580px] max-lg:py-10 max-lg:px-7 max-md:py-[52px] max-md:px-[22px] max-md:pb-9 max-md:max-w-full">
-        <div className="inline-flex items-center gap-2 bg-[rgba(201,168,76,0.08)] border border-[rgba(201,168,76,0.28)] rounded-full py-[5px] px-3.5 text-[11px] text-gold tracking-[0.5px] mb-5">
-          <span className="w-1.5 h-1.5 rounded-full bg-gold animate-rl-pulse" />
+      <div className="rl-hero__content">
+        <div className="rl-hero__pill">
+          <span className="rl-hero__pill-dot" />
           <span>500+ Premium Labels In Stock</span>
         </div>
-        <h1 className="text-[clamp(32px,4.2vw,58px)] font-bold leading-[1.1] text-white font-serif-app mb-4 max-md:text-[30px] max-[480px]:text-2xl">
+        <h1 className="rl-hero__title">
           The Finest
           <br />
-          <em className="text-gold italic">Spirits, Available.</em>
+          <em className="rl-gold">Spirits, Available.</em>
         </h1>
-        <p className="text-sm text-[#888] leading-[1.75] max-w-[420px] mb-7">
+        <p className="rl-hero__desc">
           Reserve the Rare scotches, aged cognacs, premier wines — curated by
           experts and collect from store.
         </p>
-        <div className="flex gap-3 flex-wrap mb-9 max-md:gap-2.5">
+        <div className="rl-hero__actions">
           <button
-            className="inline-flex items-center justify-center gap-1.5 py-3.5 px-[34px] text-sm font-semibold tracking-[1px] uppercase rounded-md cursor-pointer transition-all duration-[280ms] whitespace-nowrap border-none bg-gradient-to-br from-gold to-gold-dark text-black hover:bg-gradient-to-br hover:from-gold-light hover:to-gold hover:-translate-y-px hover:shadow-[0_6px_20px_rgba(201,168,76,0.3)] max-md:py-3 max-md:px-[22px] max-md:text-[13px]"
+            className="rl-btn rl-btn--gold rl-btn--lg"
             onClick={() => navigate("/products")}
           >
             Reserve now
           </button>
           <button
-            className="inline-flex items-center justify-center gap-1.5 py-3.5 px-[34px] text-sm font-semibold tracking-[1px] uppercase rounded-md cursor-pointer transition-all duration-[280ms] whitespace-nowrap border border-gold bg-transparent text-gold hover:bg-[rgba(201,168,76,0.08)] hover:-translate-y-px max-md:py-3 max-md:px-[22px] max-md:text-[13px]"
+            className="rl-btn rl-btn--outline rl-btn--lg"
             onClick={scrollToRange}
           >
             Browse Categories
           </button>
         </div>
-        <div className="flex items-center gap-6 max-md:gap-3.5 max-[480px]:flex-col max-[480px]:items-start max-[480px]:gap-2.5">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[22px] font-bold text-gold font-serif-app leading-none max-md:text-lg">
-              500+
-            </span>
-            <span className="text-[9px] text-text-dim tracking-[1.2px] uppercase">
-              Premium Labels
-            </span>
+        <div className="rl-hero__stats">
+          <div className="rl-stat">
+            <span className="rl-stat__num">500+</span>
+            <span className="rl-stat__label">Premium Labels</span>
           </div>
-          <div className="w-px h-8 bg-[rgba(201,168,76,0.24)] shrink-0 max-[480px]:hidden" />
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[22px] font-bold text-gold font-serif-app leading-none max-md:text-lg">
-              20+
-            </span>
-            <span className="text-[9px] text-text-dim tracking-[1.2px] uppercase">
-              Countries Sourced
-            </span>
+          <div className="rl-stat__divider" />
+          <div className="rl-stat">
+            <span className="rl-stat__num">20+</span>
+            <span className="rl-stat__label">Countries Sourced</span>
           </div>
-          <div className="w-px h-8 bg-[rgba(201,168,76,0.24)] shrink-0 max-[480px]:hidden" />
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[22px] font-bold text-gold font-serif-app leading-none max-md:text-lg">
-              15K+
-            </span>
-            <span className="text-[9px] text-text-dim tracking-[1.2px] uppercase">
-              Happy Customers
-            </span>
+          <div className="rl-stat__divider" />
+          <div className="rl-stat">
+            <span className="rl-stat__num">15K+</span>
+            <span className="rl-stat__label">Happy Customers</span>
           </div>
         </div>
       </div>
@@ -1166,6 +1012,10 @@ function TrendingCard({ product }) {
         <p className="text-[11px] text-text-dim mb-[9px]">
           {product.origin} · {product.category}
         </p>
+        <div className="text-gold text-xs flex items-center gap-[5px] mb-[13px]">
+          {"★★★★★"}
+          <span className="text-[11px] text-[#888]">{product.rating || 4.8}</span>
+        </div>
         <div className="flex items-center justify-between">
           <span className="text-[19px] font-bold text-gold font-serif-app">
             ${product.price.toFixed(2)}
@@ -1558,7 +1408,12 @@ function Footer({ onNavigate }) {
    ================================================================ */
 
 export default function HomePage() {
-  const [page, setPage] = useState("home");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = searchParams.get("page") || "home";
+  const setPage = (p) => {
+    if (p === "home") setSearchParams({}, { replace: true });
+    else setSearchParams({ page: p }, { replace: true });
+  };
   const { addToCart } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
   const { data = [], isLoading, error } = getProducts();
@@ -1570,7 +1425,6 @@ export default function HomePage() {
 
   return (
     <div className="bg-bg-base text-text-main font-sans-app min-h-svh overflow-x-hidden">
-      <Navbar onNavigate={setPage} currentPage={page} />
       {page === "story" ? (
         <main>
           <StoryPage />

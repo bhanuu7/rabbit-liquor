@@ -99,7 +99,7 @@ const ProductsPage = () => {
   }
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col px-4 py-8">
       {/* Page header */}
       <div className={`mb-7 pb-6 border-b border-[rgba(201,168,76,0.15)] max-h-[200px] overflow-hidden transition-all duration-[400ms] ${scrolled ? 'max-h-0 opacity-0 !mb-0 !pb-0' : ''}`}>
         <p className="text-[10px] tracking-[4px] uppercase text-gold opacity-85 mb-1.5">Curated Collection</p>

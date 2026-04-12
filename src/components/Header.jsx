@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Search, User, Clock, LogOut } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import RabbitLogo from "@/assets/RabbitLogo";
 
@@ -18,12 +18,17 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
   const { getCartCount } = useCart();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const cartCount = getCartCount();
 
+  const navLinkBase =
+    "text-[#888] text-[13px] tracking-[1px] uppercase py-1.5 px-[13px] rounded-md transition-all duration-[280ms] bg-transparent border-none cursor-pointer font-sans-app hover:text-gold hover:bg-[rgba(201,168,76,0.07)] whitespace-nowrap";
+  const navLinkActive = "text-gold bg-[rgba(201,168,76,0.07)]";
+
   return (
-    <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 h-full max-md:flex max-md:justify-between max-md:gap-2">
-      {/* LEFT — Brand */}
-      <div className="flex items-center gap-2.5 min-w-0">
+    <div className="w-full grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-5 h-full max-md:flex max-md:justify-between max-md:gap-2">
+      {/* LEFT — Brand + Nav */}
+      <div className="flex items-center gap-4 min-w-0 overflow-hidden">
         <button
           onClick={() => navigate("/home")}
           className="flex items-center gap-2.5 bg-transparent border-none cursor-pointer p-0 shrink-0"
@@ -33,11 +38,31 @@ export default function Header() {
             Rabbit Liquor
           </span>
         </button>
+        <div className="flex items-center gap-0.5 max-lg:hidden shrink-0">
+          <button
+            onClick={() => navigate("/home")}
+            className={`${navLinkBase} ${pathname === "/home" ? navLinkActive : ""}`}
+          >
+            Home
+          </button>
+          <button
+            onClick={() => navigate("/products")}
+            className={`${navLinkBase} ${pathname === "/products" ? navLinkActive : ""}`}
+          >
+            Reserve
+          </button>
+          <button
+            onClick={() => navigate("/home?page=story")}
+            className={navLinkBase}
+          >
+            About Us
+          </button>
+        </div>
       </div>
 
       {/* CENTER — Search */}
       <div className="flex justify-center max-md:hidden">
-        <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-full py-[7px] px-[18px] w-[300px] transition-all duration-[280ms] focus-within:border-gold focus-within:bg-[rgba(255,255,255,0.06)]">
+        <div className="flex items-center gap-2 bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-full py-[7px] px-[18px] w-[240px] transition-all duration-[280ms] focus-within:border-gold focus-within:bg-[rgba(255,255,255,0.06)]">
           <Search className="w-[15px] h-[15px] text-gold shrink-0" />
           <input
             type="text"

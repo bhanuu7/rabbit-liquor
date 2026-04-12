@@ -145,7 +145,7 @@ function CartPage() {
   /* ── Empty state ─────────────────────────────────────────── */
   if (!cartProducts || Object.keys(cartProducts).length === 0) {
     return (
-      <div className="min-h-screen bg-bg-base text-text-main font-sans-app">
+      <div className="min-h-screen bg-bg-base text-text-main font-sans-app px-4 py-8">
         <div className="flex flex-col items-center justify-center min-h-[380px] gap-3.5 text-center">
           <div className="w-[88px] h-[88px] rounded-full bg-[rgba(201,168,76,0.06)] border border-[rgba(201,168,76,0.18)] flex items-center justify-center text-[#444]">
             <ShoppingCart size={40} />
@@ -169,7 +169,7 @@ function CartPage() {
 
   /* ── Filled cart ─────────────────────────────────────────── */
   return (
-    <div className="min-h-screen bg-bg-base text-text-main font-sans-app">
+    <div className="min-h-screen bg-bg-base text-text-main font-sans-app px-4 py-8">
       {/* Page header */}
       <div className="mb-8 pb-6 border-b border-[rgba(201,168,76,0.15)] flex items-center gap-4">
         <button

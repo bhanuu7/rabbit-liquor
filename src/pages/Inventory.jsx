@@ -187,7 +187,7 @@ export default function Inventory() {
     }, 0);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background px-4 py-8">
       {/* Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-4">
         <Card>
