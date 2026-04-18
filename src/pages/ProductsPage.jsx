@@ -5,7 +5,6 @@ import { getProducts } from "@/api/getProducts";
 import { useCart } from "@/context/CartContext";
 import { ProductCard } from "@/components/ProductCard";
 import { reserveProduct } from "@/api/reserveProduct";
-import { products } from "@/utils";
 import WhiskeySpinner from "@/components/WhiskeySpinner";
 
 const PAGE_SIZE = 12;
@@ -27,7 +26,7 @@ const ProductsPage = () => {
   const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef(null);
   const sentinelRef = useRef(null);
-  const categories = ["all", ...new Set(products.map((p) => p.category))];
+  const categories = ["all", ...new Set(data.map((p) => p.category))];
 
   useEffect(() => {
     const cat = searchParams.get("category") ?? "all";
@@ -54,7 +53,7 @@ const ProductsPage = () => {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = data.filter((product) => {
     const matchesSearch = product.item_name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());

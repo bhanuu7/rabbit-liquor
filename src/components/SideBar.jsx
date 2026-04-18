@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sidebar";
 import { signOut } from "aws-amplify/auth";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const navItems = [
   { title: "Home", url: "/home", icon: Home },
@@ -30,11 +30,12 @@ const navItems = [
   { title: "Inventory", url: "/inventory", icon: Beer },
   { title: "Customers", url: "/customers", icon: Users },
   { title: "Settings", url: "/settings", icon: Settings },
-  { title: "orders", url: "/orders", icon: PackageCheck },
+  { title: "Orders", url: "/orders", icon: PackageCheck },
 ];
 
 export default function AppSidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const handleLogout = async () => {
     await signOut();
     toast.success("Logged out successfully", { position: "bottom-right" });
@@ -54,7 +55,11 @@ export default function AppSidebar() {
           <SidebarMenu>
             {navItems.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild tooltip={item.title}>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={item.title}
+                  isActive={location.pathname === item.url}
+                >
                   <a href={item.url}>
                     <item.icon />
                     <span>{item.title}</span>

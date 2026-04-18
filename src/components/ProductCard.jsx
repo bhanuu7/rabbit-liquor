@@ -3,23 +3,49 @@ import { ShoppingCart, Bell } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import BottleSVG, { CATEGORY_FALLBACK } from "@/components/BottleSVG";
 
+/** Downsample image URLs for low-bandwidth users.
+ *  Replaces Unsplash w= param with 400px and drops quality to 60. */
+function optimizeImageUrl(url) {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes("unsplash.com")) {
+      u.searchParams.set("w", "400");
+      u.searchParams.set("q", "60");
+      u.searchParams.set("fm", "webp");
+    }
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 export function ProductCard({ product, onNotifyMe }) {
   const isOutOfStock = product.stock_count === 0;
   const isLowStock = product.stock_count > 0 && product.stock_count <= 3;
   const { getProductCount, removeFromCart, addToCart } = useCart();
   const currentProductCount = getProductCount(product.id);
   const [imgError, setImgError] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const fallback = CATEGORY_FALLBACK[product.category] || CATEGORY_FALLBACK.default;
+  const optimizedSrc = optimizeImageUrl(product.image_url);
 
   return (
     <div className="group bg-bg-card border border-[rgba(201,168,76,0.18)] rounded-xl overflow-hidden flex flex-col transition-all duration-[280ms] ease hover:border-[rgba(201,168,76,0.5)] hover:-translate-y-1.5 hover:shadow-[0_18px_44px_rgba(201,168,76,0.1)]">
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-[#0d0d0d]">
+        {/* Shimmer skeleton shown until image loads */}
+        {!imgError && product.image_url && !imgLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-r from-[#111] via-[#1a1a1a] to-[#111] bg-[length:200%_100%] animate-pp-shimmer" />
+        )}
         {!imgError && product.image_url ? (
           <img
-            src={product.image_url}
+            src={optimizedSrc}
             alt={product.item_name}
-            className="w-full h-full object-cover transition-transform duration-[350ms] ease block group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+            className={`w-full h-full object-cover transition-all duration-[400ms] ease block group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
+            onLoad={() => setImgLoaded(true)}
             onError={() => setImgError(true)}
           />
         ) : (
