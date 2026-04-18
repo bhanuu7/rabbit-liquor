@@ -51,8 +51,8 @@ import {
 import { getProducts } from "@/api/getProducts";
 import { getOrders } from "@/api/getOrders";
 import { OrderDetailsDialog } from "@/components/OrderDetailsDialog";
-import { getOrderDetails } from "@/api/getOrderDetails";
 import { updateProduct as updateProductAPI } from "@/api/updateProducts";
+import { getNotifyRequests } from "@/api/getNotifyRequests";
 import { uploadData } from "aws-amplify/storage";
 
 const uploadImage = async (file) => {
@@ -82,10 +82,10 @@ export default function Inventory() {
   const navigate = useNavigate();
   const { data: productsData = [], isLoading } = getProducts();
   const { data: ordersData = [] } = getOrders();
+  const { data: notifyRequests = [] } = getNotifyRequests();
   const {
     products,
     reservations,
-    notifyRequests,
     updateProduct,
     deleteProduct,
     addProduct,
@@ -568,7 +568,7 @@ export default function Inventory() {
                           </div>
                         )}
                       </TableCell>
-                      <TableCell className="text-[#aaa] text-[13px]">
+                      <TableCell className="text-[#aaa] text-[13px] text-left ">
                         {editingProduct?.id === product.id ? (
                           <Input
                             value={editingProduct.category}
@@ -584,7 +584,7 @@ export default function Inventory() {
                           product.category
                         )}
                       </TableCell>
-                      <TableCell className="text-[13px]">
+                      <TableCell className="text-[13px] text-left ">
                         {editingProduct?.id === product.id ? (
                           <Input
                             type="number"
@@ -604,7 +604,7 @@ export default function Inventory() {
                           </span>
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-left">
                         {editingProduct?.id === product.id ? (
                           <Input
                             type="number"
@@ -726,25 +726,25 @@ export default function Inventory() {
                           handleOrderDetailsDialogClick(reservation.id)
                         }
                       >
-                        <TableCell className="text-[13px] text-white">
+                        <TableCell className="text-[13px] text-white text-left ">
                           {reservation.user_name}
                         </TableCell>
-                        <TableCell className="text-[13px] text-white">
+                        <TableCell className="text-[13px] text-white text-left ">
                           {reservation.customer_name}
                         </TableCell>
-                        <TableCell className="text-[13px] text-[#aaa]">
+                        <TableCell className="text-[13px] text-[#aaa] text-left ">
                           {reservation.email}
                         </TableCell>
-                        <TableCell className="text-[13px] text-[#aaa]">
+                        <TableCell className="text-[13px] text-[#aaa] text-left ">
                           {reservation.phone}
                         </TableCell>
-                        <TableCell className="text-[13px] text-gold font-semibold font-serif-app">
+                        <TableCell className="text-[13px] text-gold font-semibold font-serif-app text-left ">
                           {reservation.total_amount}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="text-left">
                           <FormattedBadge status={reservation.status} />
                         </TableCell>
-                        <TableCell className="text-[13px] text-[#888]">
+                        <TableCell className="text-[13px] text-[#888] text-left ">
                           {new Date(
                             reservation.created_at,
                           ).toLocaleDateString()}
@@ -768,19 +768,16 @@ export default function Inventory() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-b border-[rgba(201,168,76,0.18)] hover:bg-transparent">
-                    {[
-                      "Product",
-                      "Email",
-                      "Date Requested",
-                      "Current Stock",
-                    ].map((h) => (
-                      <TableHead
-                        key={h}
-                        className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold"
-                      >
-                        {h}
-                      </TableHead>
-                    ))}
+                    {["Email", "Product", "Date Requested", "Status"].map(
+                      (h) => (
+                        <TableHead
+                          key={h}
+                          className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold"
+                        >
+                          {h}
+                        </TableHead>
+                      ),
+                    )}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -795,32 +792,29 @@ export default function Inventory() {
                     </TableRow>
                   ) : (
                     notifyRequests.map((request) => {
-                      const product = productsData.find(
-                        (p) => p.id === request.productId,
-                      );
                       return (
                         <TableRow
                           key={request.id}
                           className="border-b border-[rgba(201,168,76,0.08)] hover:bg-[rgba(201,168,76,0.03)]"
                         >
-                          <TableCell className="text-[13px] text-white">
-                            {product?.name || "Unknown"}
+                          <TableCell className="text-[13px] text-white text-left">
+                            {request?.item_name || "Unknown"}
                           </TableCell>
-                          <TableCell className="text-[13px] text-[#aaa]">
+                          <TableCell className="text-[13px] text-[#aaa] text-left">
                             {request.email}
                           </TableCell>
-                          <TableCell className="text-[13px] text-[#888]">
-                            {new Date(request.timestamp).toLocaleDateString()}
+                          <TableCell className="text-[13px] text-[#888] text-left">
+                            {new Date(request.created_at).toLocaleDateString()}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="text-left ">
                             <Badge
                               className={`rounded-full text-[11px] font-semibold border ${
-                                product?.stock === 0
+                                request?.status.toLowerCase === "pending"
                                   ? "bg-[rgba(239,68,68,0.1)] text-red-400 border-[rgba(239,68,68,0.3)]"
                                   : "bg-[rgba(201,168,76,0.1)] text-gold border-[rgba(201,168,76,0.3)]"
                               }`}
                             >
-                              {product?.stock || 0}
+                              {request.status}
                             </Badge>
                           </TableCell>
                         </TableRow>
