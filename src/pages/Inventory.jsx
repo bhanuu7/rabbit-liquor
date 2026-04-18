@@ -53,6 +53,30 @@ import { getOrders } from "@/api/getOrders";
 import { OrderDetailsDialog } from "@/components/OrderDetailsDialog";
 import { getOrderDetails } from "@/api/getOrderDetails";
 import { updateProduct as updateProductAPI } from "@/api/updateProducts";
+import { uploadData } from "aws-amplify/storage";
+
+const uploadImage = async (file) => {
+  try {
+    const fileName = `products/${Date.now()}-${file.name}`;
+
+    const result = await uploadData({
+      path: fileName,
+      data: file,
+      options: {
+        contentType: file.type,
+      },
+    }).result;
+    // construct URL
+    const imageUrl = `https://rabbit-liquor-products-images.s3.ap-south-2.amazonaws.com/${fileName}`;
+
+    setNewProduct((prev) => ({
+      ...prev,
+      image: imageUrl,
+    }));
+  } catch (error) {
+    console.error("Upload failed", error);
+  }
+};
 
 export default function Inventory() {
   const navigate = useNavigate();
@@ -83,6 +107,7 @@ export default function Inventory() {
     volume: "",
     origin: "",
   });
+  const [preview, setPreview] = useState(null);
 
   const outOfStockItems = Object.values(productsData).filter(
     (product) => product.stock_count === 0,
@@ -207,7 +232,18 @@ export default function Inventory() {
       return sum + (product ? product.price * r.quantity : 0);
     }, 0);
 
-  const handleImageCapture = () => {};
+  const handleImageCapture = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    // preview (optional)
+    const previewUrl = URL.createObjectURL(file);
+    setPreview(previewUrl);
+
+    // upload
+    await uploadImage(file);
+  };
 
   return (
     <div className="min-h-screen bg-bg-base text-text-main font-sans-app px-4 py-8">
@@ -396,6 +432,15 @@ export default function Inventory() {
                       onChange={handleImageCapture}
                       className="bg-[#0d0d0d] border-[rgba(201,168,76,0.22)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px] placeholder:text-text-dim font-sans-app"
                     />
+                    {preview && (
+                      <div className="mt-2">
+                        <img
+                          src={preview}
+                          alt="preview"
+                          className="w-full h-40 object-cover rounded-md border border-[rgba(201,168,76,0.22)]"
+                        />
+                      </div>
+                    )}
                   </div>
                   <div>
                     <Label className="text-[11px] uppercase tracking-[1.2px] text-gold mb-1.5 block">
