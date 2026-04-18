@@ -61,6 +61,14 @@ export function CartProvider({ children }) {
     );
   };
 
+  const getCartTotal = () => {
+    if (!cartProducts) return;
+    return Object.values(cartProducts).reduce(
+      (total, item) => total + Number(item.product.price) * item.quantity,
+      0,
+    );
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -70,6 +78,7 @@ export function CartProvider({ children }) {
         getCartCount,
         getProductCount,
         clearCart,
+        getCartTotal,
       }}
     >
       {children}

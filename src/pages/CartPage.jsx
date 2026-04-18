@@ -107,18 +107,20 @@ function CartItem({ item, addToCart, removeFromCart }) {
 function CartPage() {
   const navigate = useNavigate();
   const { mutate, isPending } = reserveProduct();
-  const { cartProducts, addToCart, removeFromCart, clearCart } = useCart();
+  const { cartProducts, addToCart, removeFromCart, clearCart, getCartTotal } =
+    useCart();
   const [checkoutOpen, setCheckoutOpen] = useState(false); // TO DO
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
   });
-  const { addReservation } = useStore();
 
-  const subtotal = 6969;
+  const subtotal = getCartTotal();
   const tax = subtotal * 0.08;
   const total = subtotal + tax;
+
+  console.log("subtotal", subtotal, typeof subtotal);
 
   const handleCheckout = (e) => {
     e.preventDefault();
@@ -138,6 +140,7 @@ function CartPage() {
       description: `We've sent a confirmation email to ${formData.email}. Please pick up within 48 hours.`,
     });
     setFormData({ name: "", email: "", phone: "" });
+    clearCart();
     setCheckoutOpen(false);
     navigate("/home");
   };
