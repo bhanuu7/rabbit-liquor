@@ -61,11 +61,11 @@ function CartItem({ item, addToCart, removeFromCart }) {
             <div className="text-sm font-semibold text-text-main font-serif-app leading-[1.3]">
               {item.product.item_name}
             </div>
-            <div className="text-[11px] text-text-dim mt-[3px]">
+            <div className="text-[11px] text-text-dim mt-[3px] text-left">
               {item.product.volume || "750 ml"} ·{" "}
               {item.product.alcoholContent || "40%"} ABV
             </div>
-            <div className="text-[13px] font-semibold text-gold mt-1">
+            <div className="text-[13px] font-semibold text-gold mt-1 font-serif-app text-left">
               ${item.product.price}
             </div>
           </div>

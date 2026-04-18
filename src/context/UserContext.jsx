@@ -9,11 +9,10 @@ export const UserProvider = ({ children }) => {
   const [role, setRole] = useState();
 
   async function fetchRole() {
-    const session = await fetchAuthSession();
     // Add this to see the raw error details
     try {
-      const session = await fetchAuthSession();
-      console.log(session);
+     // const session = await fetchAuthSession();
+     // console.log(session);
     } catch (error) {
       console.log("Error Name:", error.name);
       console.log("Error Message:", error.message);

@@ -252,12 +252,13 @@
 }
 
 /* ================================================================
-   HERO — compact conversion banner
+   HERO — full-screen immersive banner
    ================================================================ */
 
 .rl-hero {
   position: relative;
-  min-height: 56vh;
+  height: calc(100dvh - 4rem);
+  min-height: calc(100dvh - 4rem);
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -290,6 +291,12 @@
   0%   { transform: translateY(-50%) scale(1); }
   50%  { transform: translateY(-52%) scale(1.02); }
   100% { transform: translateY(-50%) scale(1); }
+}
+
+@keyframes rl-float-splash-mobile {
+  0%   { transform: translateX(50%) translateY(0)     scale(1);    }
+  50%  { transform: translateX(50%) translateY(-14px) scale(1.025); }
+  100% { transform: translateX(50%) translateY(0)     scale(1);    }
 }
 
 .rl-hero__content {
@@ -1250,17 +1257,66 @@
    ================================================================ */
 
 @media (max-width: 768px) {
+  /* ── Hero: full-screen, image top, content anchored to bottom ── */
   .rl-hero {
-    min-height: auto;
-    align-items: flex-start;
+    height: calc(100dvh - 4rem);
+    min-height: calc(100dvh - 4rem);
+    align-items: flex-end;
   }
-  .rl-hero__content { padding: 52px 22px 36px; max-width: 100%; }
-  .rl-hero__title { font-size: 30px; }
-  .rl-hero-splash-wrap { opacity: 0.9; right: 4%; width: min(40vw, 320px); }
-  .rl-hero__stats { gap: 14px; }
-  .rl-stat__num { font-size: 18px; }
-  .rl-hero__actions { gap: 10px; }
-  .rl-btn--lg { padding: 12px 22px; font-size: 13px; }
+  .rl-hero-splash-wrap {
+    right: 50%;
+    top: 3%;
+    transform: translateX(50%);
+    width: min(80vw, 340px);
+    animation: rl-float-splash-mobile 6s ease-in-out infinite;
+    opacity: 1;
+  }
+  .rl-hero-splash-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: center bottom;
+  }
+  .rl-hero__content {
+    padding: 36px 24px 56px;
+    max-width: 100%;
+    width: 100%;
+    text-align: center;
+    /* gradient ensures text readability over the splash image */
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 1)    50%,
+      rgba(0, 0, 0, 0.96) 68%,
+      rgba(0, 0, 0, 0.82) 82%,
+      rgba(0, 0, 0, 0.65) 92%,
+      rgba(0, 0, 0, 0.5)  100%
+    );
+    position: relative;
+    z-index: 10;
+  }
+  .rl-hero__pill   { justify-content: center; }
+  .rl-hero__title  { font-size: 30px; }
+  .rl-hero__desc   { margin-left: auto; margin-right: auto; }
+  .rl-hero__actions { justify-content: center; gap: 10px; }
+  /* Stats: flex row, evenly spaced, always horizontal */
+  .rl-hero__stats  {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+  }
+  .rl-stat__divider { display: none; }
+  .rl-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .rl-stat__num    { font-size: 18px; }
+  .rl-btn--lg      { padding: 12px 22px; font-size: 13px; }
 
   .rl-range-carousel-wrap { padding: 0 46px; }
   .rl-range-card { flex: 0 0 155px; padding: 20px 10px 16px; border-radius: 14px; }
@@ -1280,10 +1336,12 @@
 
 @media (max-width: 480px) {
   .rl-nav__brand-name { font-size: 14px; }
-  .rl-hero__title { font-size: 24px; }
-  .rl-hero__stats { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .rl-stat__divider { display: none; }
-  .rl-hero-splash-wrap { opacity: 0.8; right: 0; width: min(40vw, 240px); display: block; }
+  .rl-hero__title     { font-size: 26px; }
+  .rl-hero__content   { padding: 24px 20px 48px; }
+  .rl-hero-splash-wrap { width: min(76vw, 270px); }
+  /* Tighten stat text at smallest screens — grid already handles alignment */
+  .rl-stat__num       { font-size: 16px; }
+  .rl-stat__label     { font-size: 8px; letter-spacing: 0.8px; }
   .rl-range-carousel-wrap { padding: 0 38px; }
   .rl-range-card { flex: 0 0 140px; padding: 16px 8px 14px; }
   .rl-range-card__icon { width: 42px; height: 72px; }

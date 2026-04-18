@@ -1,24 +1,30 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 const CartContext = createContext(undefined);
 
+const CART_KEY = "rabbit_cart";
+
 export function CartProvider({ children }) {
-  const [cartProducts, setCartProducts] = useState([]);
+  const [cartProducts, setCartProducts, clearCartStorage] = useLocalStorage(
+    CART_KEY,
+    {},
+  );
 
   const addToCart = (product) => {
     setCartProducts((prev) => {
-      const productExists = prev?.[product.id];
+      const existing = prev?.[product.id];
       return {
         ...prev,
-        [product.id]: productExists
-          ? { ...productExists, quantity: productExists.quantity + 1 }
+        [product.id]: existing
+          ? { ...existing, quantity: existing.quantity + 1 }
           : { product, quantity: 1 },
       };
     });
   };
 
   const clearCart = () => {
-    setCartProducts([]);
+    clearCartStorage();
   };
 
   const removeFromCart = (product) => {

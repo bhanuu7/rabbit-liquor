@@ -1,3 +1,4 @@
+import "./HomePage.css";
 import { useState } from "react";
 import { Wine, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -1197,7 +1198,7 @@ function Footer({ onNavigate }) {
       className="bg-[#040404] border-t border-[rgba(201,168,76,0.18)]"
       id="about"
     >
-      <div className="flex gap-[72px] py-20 px-16 max-w-[1400px] mx-auto max-lg:flex-col max-lg:gap-10 max-lg:py-14 max-lg:px-8">
+      <div className="flex gap-[72px] py-20 px-16 max-w-[1400px] mx-auto max-lg:flex-col max-lg:gap-10 max-lg:py-14 max-lg:px-8 max-md:py-10 max-md:px-5 max-md:gap-6">
         <div className="flex-[0_0_280px] max-lg:flex-none">
           <div className="flex items-center gap-3 mb-5">
             <RabbitLogo size={48} />
@@ -1261,7 +1262,7 @@ function Footer({ onNavigate }) {
           </div>
         </div>
 
-        <div className="flex gap-14 flex-1 flex-wrap max-lg:gap-8 max-md:flex-col max-md:gap-7">
+        <div className="grid grid-cols-3 gap-10 flex-1 max-lg:gap-8 max-md:grid-cols-2 max-md:gap-x-6 max-md:gap-y-8">
           <div className="flex flex-col gap-[11px]">
             <h4 className="text-[10px] tracking-[2.5px] uppercase text-gold font-sans-app mb-1.5">
               Navigate
@@ -1375,7 +1376,7 @@ function Footer({ onNavigate }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between py-5 px-16 border-t border-[rgba(201,168,76,0.1)] flex-wrap gap-3 max-lg:px-8 max-md:flex-col max-md:items-start max-md:gap-2">
+      <div className="flex items-center justify-between py-5 px-16 border-t border-[rgba(201,168,76,0.1)] flex-wrap gap-3 max-lg:px-8 max-md:px-5 max-md:flex-col max-md:items-start max-md:gap-2">
         <p className="text-[11px] text-[#333]">
           © 2026 Rabbit Liquor · All rights reserved · Drink Responsibly · Must
           be 21+ to purchase.
@@ -1439,7 +1440,7 @@ export default function HomePage() {
           <ReviewsSection />
         </main>
       )}
-      <Footer onNavigate={setPage} />
+      {/* <Footer onNavigate={setPage} /> */}
     </div>
   );
 }
