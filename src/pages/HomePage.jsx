@@ -15,7 +15,7 @@ import { reserveProduct } from "@/api/reserveProduct";
 import { useInventorySocket } from "@/hooks/useInventerySocket";
 import { useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import designerImg from "../assets/designer2.png";
+import designerImg from "../assets/Designer2.png";
 import BottleSVG, { CATEGORY_FALLBACK } from "@/components/BottleSVG";
 import { products as REAL_PRODUCTS } from "@/utils";
 
@@ -1014,7 +1014,9 @@ function TrendingCard({ product }) {
         </p>
         <div className="text-gold text-xs flex items-center gap-[5px] mb-[13px]">
           {"★★★★★"}
-          <span className="text-[11px] text-[#888]">{product.rating || 4.8}</span>
+          <span className="text-[11px] text-[#888]">
+            {product.rating || 4.8}
+          </span>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-[19px] font-bold text-gold font-serif-app">
