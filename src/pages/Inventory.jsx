@@ -91,9 +91,25 @@ export default function Inventory() {
     (product) => product.stock_count <= 5 && product.stock_count > 0,
   );
 
-  const FALLBACK_CATEGORIES = ["Wine", "Whiskey", "Beer", "Rum", "Vodka", "Tequila", "Champagne", "Gin", "Cognac", "Scotch"];
+  const FALLBACK_CATEGORIES = [
+    "Wine",
+    "Whiskey",
+    "Beer",
+    "Rum",
+    "Vodka",
+    "Tequila",
+    "Champagne",
+    "Gin",
+    "Cognac",
+    "Scotch",
+  ];
   const availableCategories = Array.from(
-    new Set([...FALLBACK_CATEGORIES, ...Object.values(productsData).map((p) => p.category).filter(Boolean)])
+    new Set([
+      ...FALLBACK_CATEGORIES,
+      ...Object.values(productsData)
+        .map((p) => p.category)
+        .filter(Boolean),
+    ]),
   ).sort();
 
   const handleUpdateStock = (productId, newStock) => {
@@ -191,48 +207,74 @@ export default function Inventory() {
       return sum + (product ? product.price * r.quantity : 0);
     }, 0);
 
+  const handleImageCapture = () => {};
+
   return (
     <div className="min-h-screen bg-bg-base text-text-main font-sans-app px-4 py-8">
       {/* Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-4">
         <Card className="bg-bg-card border-[rgba(201,168,76,0.18)] hover:border-[rgba(201,168,76,0.4)] transition-all duration-[280ms]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[11px] uppercase tracking-[1.5px] text-[#888] font-sans-app font-normal">Total Products</CardTitle>
+            <CardTitle className="text-[11px] uppercase tracking-[1.5px] text-[#888] font-sans-app font-normal">
+              Total Products
+            </CardTitle>
             <Package className="w-4 h-4 text-gold opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-white font-serif-app">{productsData.length}</div>
-            <p className="text-[11px] text-text-dim mt-1">{outOfStockItems.length} out of stock</p>
+            <div className="text-3xl font-bold text-white font-serif-app">
+              {productsData.length}
+            </div>
+            <p className="text-[11px] text-text-dim mt-1">
+              {outOfStockItems.length} out of stock
+            </p>
           </CardContent>
         </Card>
         <Card className="bg-bg-card border-[rgba(201,168,76,0.18)] hover:border-[rgba(201,168,76,0.4)] transition-all duration-[280ms]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[11px] uppercase tracking-[1.5px] text-[#888] font-sans-app font-normal">Running Out</CardTitle>
+            <CardTitle className="text-[11px] uppercase tracking-[1.5px] text-[#888] font-sans-app font-normal">
+              Running Out
+            </CardTitle>
             <TriangleAlert className="w-4 h-4 text-gold opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-white font-serif-app">{runningOutOfStockItems.length}</div>
-            <p className="text-[11px] text-text-dim mt-1">{runningOutOfStockItems.length} might go out of stock</p>
+            <div className="text-3xl font-bold text-white font-serif-app">
+              {runningOutOfStockItems.length}
+            </div>
+            <p className="text-[11px] text-text-dim mt-1">
+              {runningOutOfStockItems.length} might go out of stock
+            </p>
           </CardContent>
         </Card>
         <Card className="bg-bg-card border-[rgba(201,168,76,0.18)] hover:border-[rgba(201,168,76,0.4)] transition-all duration-[280ms]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[11px] uppercase tracking-[1.5px] text-[#888] font-sans-app font-normal">Reservations</CardTitle>
+            <CardTitle className="text-[11px] uppercase tracking-[1.5px] text-[#888] font-sans-app font-normal">
+              Reservations
+            </CardTitle>
             <ShoppingBag className="w-4 h-4 text-gold opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-white font-serif-app">{ordersData.length}</div>
-            <p className="text-[11px] text-text-dim mt-1">{ordersData.length} total reservations</p>
+            <div className="text-3xl font-bold text-white font-serif-app">
+              {ordersData.length}
+            </div>
+            <p className="text-[11px] text-text-dim mt-1">
+              {ordersData.length} total reservations
+            </p>
           </CardContent>
         </Card>
         <Card className="bg-bg-card border-[rgba(201,168,76,0.18)] hover:border-[rgba(201,168,76,0.4)] transition-all duration-[280ms]">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[11px] uppercase tracking-[1.5px] text-[#888] font-sans-app font-normal">Notify Requests</CardTitle>
+            <CardTitle className="text-[11px] uppercase tracking-[1.5px] text-[#888] font-sans-app font-normal">
+              Notify Requests
+            </CardTitle>
             <Bell className="w-4 h-4 text-gold opacity-70" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-white font-serif-app">{notifyRequests.length}</div>
-            <p className="text-[11px] text-text-dim mt-1">Customers waiting for restock</p>
+            <div className="text-3xl font-bold text-white font-serif-app">
+              {notifyRequests.length}
+            </div>
+            <p className="text-[11px] text-text-dim mt-1">
+              Customers waiting for restock
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -240,15 +282,32 @@ export default function Inventory() {
       {/* Tabs */}
       <Tabs defaultValue="products" className="space-y-4">
         <TabsList className="bg-bg-card border border-[rgba(201,168,76,0.18)] p-1 rounded-lg h-auto gap-1 [&>[data-state=active]]:bg-gold [&>[data-state=active]]:text-black [&>[data-state=inactive]]:text-[#888] [&>[data-state=inactive]]:hover:text-gold">
-          <TabsTrigger value="products" className="text-[12px] tracking-[0.8px] uppercase font-semibold px-4 py-2 rounded-md transition-all duration-[280ms] cursor-pointer">Products</TabsTrigger>
-          <TabsTrigger value="reservations" className="text-[12px] tracking-[0.8px] uppercase font-semibold px-4 py-2 rounded-md transition-all duration-[280ms] cursor-pointer">Reservations</TabsTrigger>
-          <TabsTrigger value="notify" className="text-[12px] tracking-[0.8px] uppercase font-semibold px-4 py-2 rounded-md transition-all duration-[280ms] cursor-pointer">Notify Requests</TabsTrigger>
+          <TabsTrigger
+            value="products"
+            className="text-[12px] tracking-[0.8px] uppercase font-semibold px-4 py-2 rounded-md transition-all duration-[280ms] cursor-pointer"
+          >
+            Products
+          </TabsTrigger>
+          <TabsTrigger
+            value="reservations"
+            className="text-[12px] tracking-[0.8px] uppercase font-semibold px-4 py-2 rounded-md transition-all duration-[280ms] cursor-pointer"
+          >
+            Reservations
+          </TabsTrigger>
+          <TabsTrigger
+            value="notify"
+            className="text-[12px] tracking-[0.8px] uppercase font-semibold px-4 py-2 rounded-md transition-all duration-[280ms] cursor-pointer"
+          >
+            Notify Requests
+          </TabsTrigger>
         </TabsList>
 
         {/* Products Tab */}
         <TabsContent value="products" className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-white font-serif-app tracking-wide">Product Management</h2>
+            <h2 className="text-xl font-bold text-white font-serif-app tracking-wide">
+              Product Management
+            </h2>
             <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="bg-gradient-to-br from-gold to-[#8b6914] text-black border-none hover:from-[#f0d080] hover:to-gold hover:-translate-y-px hover:shadow-[0_6px_20px_rgba(201,168,76,0.3)] transition-all duration-[280ms]">
@@ -258,23 +317,56 @@ export default function Inventory() {
               </DialogTrigger>
               <DialogContent className="bg-bg-card border border-[rgba(201,168,76,0.28)] text-text-main max-h-[80vh] overflow-y-auto sm:max-w-lg mt-8 top-[48%] [&_[data-slot=dialog-close]]:text-[#888] [&_[data-slot=dialog-close]:hover]:text-gold [&_[data-slot=dialog-close]:hover]:bg-[rgba(201,168,76,0.08)]">
                 <DialogHeader>
-                  <DialogTitle className="text-white font-serif-app text-lg tracking-wide">Add New Product</DialogTitle>
+                  <DialogTitle className="text-white font-serif-app text-lg tracking-wide">
+                    Add New Product
+                  </DialogTitle>
                   <DialogDescription className="text-[#888] text-[13px]">
                     Enter the details for the new product
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-2">
                   {[
-                    { label: "Name *",            key: "name",           type: "text",   placeholder: "" },
-                    { label: "Price *",            key: "price",          type: "number", placeholder: "" },
-                    { label: "Stock",              key: "stock",          type: "number", placeholder: "" },
-                    { label: "Alcohol Content",    key: "alcoholContent", type: "text",   placeholder: "40%" },
-                    { label: "Volume",             key: "volume",         type: "text",   placeholder: "750ml" },
-                    { label: "Origin",             key: "origin",         type: "text",   placeholder: "" },
-                    { label: "Image URL",          key: "image",          type: "text",   placeholder: "https://..." },
+                    {
+                      label: "Name *",
+                      key: "name",
+                      type: "text",
+                      placeholder: "",
+                    },
+                    {
+                      label: "Price *",
+                      key: "price",
+                      type: "number",
+                      placeholder: "",
+                    },
+                    {
+                      label: "Stock",
+                      key: "stock",
+                      type: "number",
+                      placeholder: "",
+                    },
+                    {
+                      label: "Alcohol Content",
+                      key: "alcoholContent",
+                      type: "text",
+                      placeholder: "40%",
+                    },
+                    {
+                      label: "Volume",
+                      key: "volume",
+                      type: "text",
+                      placeholder: "750ml",
+                    },
+                    {
+                      label: "Origin",
+                      key: "origin",
+                      type: "text",
+                      placeholder: "",
+                    },
                   ].map(({ label, key, type, placeholder }) => (
                     <div key={key}>
-                      <Label className="text-[11px] uppercase tracking-[1.2px] text-gold mb-1.5 block">{label}</Label>
+                      <Label className="text-[11px] uppercase tracking-[1.2px] text-gold mb-1.5 block">
+                        {label}
+                      </Label>
                       <Input
                         type={type}
                         step={type === "number" ? "0.01" : undefined}
@@ -283,7 +375,10 @@ export default function Inventory() {
                         onChange={(e) =>
                           setNewProduct({
                             ...newProduct,
-                            [key]: type === "number" ? (parseFloat(e.target.value) || 0) : e.target.value,
+                            [key]:
+                              type === "number"
+                                ? parseFloat(e.target.value) || 0
+                                : e.target.value,
                           })
                         }
                         className="bg-[#0d0d0d] border-[rgba(201,168,76,0.22)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px] placeholder:text-text-dim font-sans-app"
@@ -291,24 +386,66 @@ export default function Inventory() {
                     </div>
                   ))}
                   <div>
-                    <Label className="text-[11px] uppercase tracking-[1.2px] text-gold mb-1.5 block">Category *</Label>
+                    <Label className="text-[11px] uppercase tracking-[1.2px] text-gold mb-1.5 block">
+                      Image
+                    </Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={handleImageCapture}
+                      className="bg-[#0d0d0d] border-[rgba(201,168,76,0.22)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px] placeholder:text-text-dim font-sans-app"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[11px] uppercase tracking-[1.2px] text-gold mb-1.5 block">
+                      Category *
+                    </Label>
                     <select
                       value={newProduct.category}
-                      onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+                      onChange={(e) =>
+                        setNewProduct({
+                          ...newProduct,
+                          category: e.target.value,
+                        })
+                      }
                       className="w-full bg-[#0d0d0d] border border-[rgba(201,168,76,0.22)] rounded-md px-3 py-2 text-[13px] text-white outline-none transition-all duration-[280ms] focus:border-gold focus:bg-[rgba(201,168,76,0.04)] font-sans-app cursor-pointer appearance-none"
-                      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c9a84c' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c9a84c' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "right 12px center",
+                      }}
                     >
-                      <option value="" disabled className="bg-[#111] text-[#555]">Select a category…</option>
+                      <option
+                        value=""
+                        disabled
+                        className="bg-[#111] text-[#555]"
+                      >
+                        Select a category…
+                      </option>
                       {availableCategories.map((cat) => (
-                        <option key={cat} value={cat} className="bg-[#111] text-white">{cat}</option>
+                        <option
+                          key={cat}
+                          value={cat}
+                          className="bg-[#111] text-white"
+                        >
+                          {cat}
+                        </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <Label className="text-[11px] uppercase tracking-[1.2px] text-gold mb-1.5 block">Description</Label>
+                    <Label className="text-[11px] uppercase tracking-[1.2px] text-gold mb-1.5 block">
+                      Description
+                    </Label>
                     <Textarea
                       value={newProduct.description}
-                      onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                      onChange={(e) =>
+                        setNewProduct({
+                          ...newProduct,
+                          description: e.target.value,
+                        })
+                      }
                       rows={3}
                       className="bg-[#0d0d0d] border-[rgba(201,168,76,0.22)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px] placeholder:text-text-dim font-sans-app resize-none"
                     />
@@ -338,27 +475,51 @@ export default function Inventory() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-b border-[rgba(201,168,76,0.18)] hover:bg-transparent">
-                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">Product</TableHead>
-                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">Category</TableHead>
-                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">Price</TableHead>
-                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">Stock</TableHead>
-                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold text-right">Actions</TableHead>
+                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">
+                      Product
+                    </TableHead>
+                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">
+                      Category
+                    </TableHead>
+                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">
+                      Price
+                    </TableHead>
+                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">
+                      Stock
+                    </TableHead>
+                    <TableHead className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold text-right">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {productsData.map((product) => (
-                    <TableRow key={product.id} className="border-b border-[rgba(201,168,76,0.08)] hover:bg-[rgba(201,168,76,0.03)]">
+                    <TableRow
+                      key={product.id}
+                      className="border-b border-[rgba(201,168,76,0.08)] hover:bg-[rgba(201,168,76,0.03)]"
+                    >
                       <TableCell className="text-white">
                         {editingProduct?.id === product.id ? (
                           <Input
                             value={editingProduct.item_name}
-                            onChange={(e) => setEditingProduct({ ...editingProduct, item_name: e.target.value })}
+                            onChange={(e) =>
+                              setEditingProduct({
+                                ...editingProduct,
+                                item_name: e.target.value,
+                              })
+                            }
                             className="bg-[#0d0d0d] border-[rgba(201,168,76,0.3)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px]"
                           />
                         ) : (
                           <div className="flex items-center gap-3">
-                            <img src={product.image_url} alt={product.item_name} className="w-9 h-9 rounded object-cover opacity-90" />
-                            <span className="text-[13px]">{product.item_name}</span>
+                            <img
+                              src={product.image_url}
+                              alt={product.item_name}
+                              className="w-9 h-9 rounded object-cover opacity-90"
+                            />
+                            <span className="text-[13px]">
+                              {product.item_name}
+                            </span>
                           </div>
                         )}
                       </TableCell>
@@ -366,37 +527,61 @@ export default function Inventory() {
                         {editingProduct?.id === product.id ? (
                           <Input
                             value={editingProduct.category}
-                            onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                            onChange={(e) =>
+                              setEditingProduct({
+                                ...editingProduct,
+                                category: e.target.value,
+                              })
+                            }
                             className="bg-[#0d0d0d] border-[rgba(201,168,76,0.3)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px]"
                           />
-                        ) : product.category}
+                        ) : (
+                          product.category
+                        )}
                       </TableCell>
                       <TableCell className="text-[13px]">
                         {editingProduct?.id === product.id ? (
                           <Input
-                            type="number" step="0.01"
+                            type="number"
+                            step="0.01"
                             value={editingProduct.price}
-                            onChange={(e) => setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })}
+                            onChange={(e) =>
+                              setEditingProduct({
+                                ...editingProduct,
+                                price: parseFloat(e.target.value) || 0,
+                              })
+                            }
                             className="bg-[#0d0d0d] border-[rgba(201,168,76,0.3)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px] w-24"
                           />
-                        ) : <span className="text-gold font-semibold font-serif-app">${product.price}</span>}
+                        ) : (
+                          <span className="text-gold font-semibold font-serif-app">
+                            ${product.price}
+                          </span>
+                        )}
                       </TableCell>
                       <TableCell>
                         {editingProduct?.id === product.id ? (
                           <Input
                             type="number"
                             value={editingProduct.stock_count}
-                            onChange={(e) => setEditingProduct({ ...editingProduct, stock_count: parseInt(e.target.value) || 0 })}
+                            onChange={(e) =>
+                              setEditingProduct({
+                                ...editingProduct,
+                                stock_count: parseInt(e.target.value) || 0,
+                              })
+                            }
                             className="bg-[#0d0d0d] border-[rgba(201,168,76,0.3)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px] w-20"
                           />
                         ) : (
-                          <Badge className={`rounded-full text-[11px] font-semibold border ${
-                            product.stock_count === 0
-                              ? "bg-[rgba(239,68,68,0.1)] text-red-400 border-[rgba(239,68,68,0.3)]"
-                              : product.stock_count <= 3
-                                ? "bg-[rgba(234,179,8,0.1)] text-yellow-400 border-[rgba(234,179,8,0.3)]"
-                                : "bg-[rgba(201,168,76,0.1)] text-gold border-[rgba(201,168,76,0.3)]"
-                          }`}>
+                          <Badge
+                            className={`rounded-full text-[11px] font-semibold border ${
+                              product.stock_count === 0
+                                ? "bg-[rgba(239,68,68,0.1)] text-red-400 border-[rgba(239,68,68,0.3)]"
+                                : product.stock_count <= 3
+                                  ? "bg-[rgba(234,179,8,0.1)] text-yellow-400 border-[rgba(234,179,8,0.3)]"
+                                  : "bg-[rgba(201,168,76,0.1)] text-gold border-[rgba(201,168,76,0.3)]"
+                            }`}
+                          >
                             {product.stock_count}
                           </Badge>
                         )}
@@ -404,19 +589,38 @@ export default function Inventory() {
                       <TableCell className="text-right">
                         {editingProduct?.id === product.id ? (
                           <div className="flex justify-end gap-2">
-                            <Button size="sm" onClick={handleSaveEdit} className="bg-[rgba(201,168,76,0.1)] text-gold border border-[rgba(201,168,76,0.3)] hover:bg-[rgba(201,168,76,0.2)] h-7 w-7 p-0">
+                            <Button
+                              size="sm"
+                              onClick={handleSaveEdit}
+                              className="bg-[rgba(201,168,76,0.1)] text-gold border border-[rgba(201,168,76,0.3)] hover:bg-[rgba(201,168,76,0.2)] h-7 w-7 p-0"
+                            >
                               <Save className="w-3.5 h-3.5" />
                             </Button>
-                            <Button size="sm" variant="ghost" onClick={() => setEditingProduct(null)} className="text-[#888] hover:text-white hover:bg-[rgba(255,255,255,0.07)] text-[12px] h-7 px-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => setEditingProduct(null)}
+                              className="text-[#888] hover:text-white hover:bg-[rgba(255,255,255,0.07)] text-[12px] h-7 px-2"
+                            >
                               Cancel
                             </Button>
                           </div>
                         ) : (
                           <div className="flex justify-end gap-2">
-                            <Button size="sm" variant="ghost" onClick={() => handleEditProduct(product)} className="text-[#666] hover:text-gold hover:bg-[rgba(201,168,76,0.1)] h-7 w-7 p-0">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEditProduct(product)}
+                              className="text-[#666] hover:text-gold hover:bg-[rgba(201,168,76,0.1)] h-7 w-7 p-0"
+                            >
                               <Pencil className="w-3.5 h-3.5" />
                             </Button>
-                            <Button size="sm" variant="ghost" onClick={() => handleDeleteProduct(product.id)} className="text-[#666] hover:text-red-400 hover:bg-[rgba(239,68,68,0.08)] h-7 w-7 p-0">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleDeleteProduct(product.id)}
+                              className="text-[#666] hover:text-red-400 hover:bg-[rgba(239,68,68,0.08)] h-7 w-7 p-0"
+                            >
                               <Trash2 className="w-3.5 h-3.5" />
                             </Button>
                           </div>
@@ -432,36 +636,74 @@ export default function Inventory() {
 
         {/* Reservations Tab */}
         <TabsContent value="reservations" className="space-y-4">
-          <h2 className="text-xl font-bold text-white font-serif-app tracking-wide">Reservations</h2>
+          <h2 className="text-xl font-bold text-white font-serif-app tracking-wide">
+            Reservations
+          </h2>
           <Card className="bg-bg-card border-[rgba(201,168,76,0.18)]">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
                   <TableRow className="border-b border-[rgba(201,168,76,0.18)] hover:bg-transparent">
-                    {["User Name","Customer Name","Email","Phone","Total Amount","Status","Date"].map(h => (
-                      <TableHead key={h} className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">{h}</TableHead>
+                    {[
+                      "User Name",
+                      "Customer Name",
+                      "Email",
+                      "Phone",
+                      "Total Amount",
+                      "Status",
+                      "Date",
+                    ].map((h) => (
+                      <TableHead
+                        key={h}
+                        className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold"
+                      >
+                        {h}
+                      </TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {ordersData.length === 0 ? (
                     <TableRow className="hover:bg-transparent">
-                      <TableCell colSpan={7} className="text-center text-[#555] py-12 text-[13px]">No reservations yet</TableCell>
+                      <TableCell
+                        colSpan={7}
+                        className="text-center text-[#555] py-12 text-[13px]"
+                      >
+                        No reservations yet
+                      </TableCell>
                     </TableRow>
                   ) : (
                     ordersData.map((reservation) => (
                       <TableRow
                         key={reservation.id}
                         className="border-b border-[rgba(201,168,76,0.08)] cursor-pointer hover:bg-[rgba(201,168,76,0.04)]"
-                        onClick={() => handleOrderDetailsDialogClick(reservation.id)}
+                        onClick={() =>
+                          handleOrderDetailsDialogClick(reservation.id)
+                        }
                       >
-                        <TableCell className="text-[13px] text-white">{reservation.user_name}</TableCell>
-                        <TableCell className="text-[13px] text-white">{reservation.customer_name}</TableCell>
-                        <TableCell className="text-[13px] text-[#aaa]">{reservation.email}</TableCell>
-                        <TableCell className="text-[13px] text-[#aaa]">{reservation.phone}</TableCell>
-                        <TableCell className="text-[13px] text-gold font-semibold font-serif-app">{reservation.total_amount}</TableCell>
-                        <TableCell><FormattedBadge status={reservation.status} /></TableCell>
-                        <TableCell className="text-[13px] text-[#888]">{new Date(reservation.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-[13px] text-white">
+                          {reservation.user_name}
+                        </TableCell>
+                        <TableCell className="text-[13px] text-white">
+                          {reservation.customer_name}
+                        </TableCell>
+                        <TableCell className="text-[13px] text-[#aaa]">
+                          {reservation.email}
+                        </TableCell>
+                        <TableCell className="text-[13px] text-[#aaa]">
+                          {reservation.phone}
+                        </TableCell>
+                        <TableCell className="text-[13px] text-gold font-semibold font-serif-app">
+                          {reservation.total_amount}
+                        </TableCell>
+                        <TableCell>
+                          <FormattedBadge status={reservation.status} />
+                        </TableCell>
+                        <TableCell className="text-[13px] text-[#888]">
+                          {new Date(
+                            reservation.created_at,
+                          ).toLocaleDateString()}
+                        </TableCell>
                       </TableRow>
                     ))
                   )}
@@ -473,36 +715,66 @@ export default function Inventory() {
 
         {/* Notify Requests Tab */}
         <TabsContent value="notify" className="space-y-4">
-          <h2 className="text-xl font-bold text-white font-serif-app tracking-wide">Restock Notifications</h2>
+          <h2 className="text-xl font-bold text-white font-serif-app tracking-wide">
+            Restock Notifications
+          </h2>
           <Card className="bg-bg-card border-[rgba(201,168,76,0.18)]">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
                   <TableRow className="border-b border-[rgba(201,168,76,0.18)] hover:bg-transparent">
-                    {["Product","Email","Date Requested","Current Stock"].map(h => (
-                      <TableHead key={h} className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold">{h}</TableHead>
+                    {[
+                      "Product",
+                      "Email",
+                      "Date Requested",
+                      "Current Stock",
+                    ].map((h) => (
+                      <TableHead
+                        key={h}
+                        className="text-[10px] uppercase tracking-[1.5px] text-gold font-semibold"
+                      >
+                        {h}
+                      </TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {notifyRequests.length === 0 ? (
                     <TableRow className="hover:bg-transparent">
-                      <TableCell colSpan={4} className="text-center text-[#555] py-12 text-[13px]">No notification requests</TableCell>
+                      <TableCell
+                        colSpan={4}
+                        className="text-center text-[#555] py-12 text-[13px]"
+                      >
+                        No notification requests
+                      </TableCell>
                     </TableRow>
                   ) : (
                     notifyRequests.map((request) => {
-                      const product = productsData.find((p) => p.id === request.productId);
+                      const product = productsData.find(
+                        (p) => p.id === request.productId,
+                      );
                       return (
-                        <TableRow key={request.id} className="border-b border-[rgba(201,168,76,0.08)] hover:bg-[rgba(201,168,76,0.03)]">
-                          <TableCell className="text-[13px] text-white">{product?.name || "Unknown"}</TableCell>
-                          <TableCell className="text-[13px] text-[#aaa]">{request.email}</TableCell>
-                          <TableCell className="text-[13px] text-[#888]">{new Date(request.timestamp).toLocaleDateString()}</TableCell>
+                        <TableRow
+                          key={request.id}
+                          className="border-b border-[rgba(201,168,76,0.08)] hover:bg-[rgba(201,168,76,0.03)]"
+                        >
+                          <TableCell className="text-[13px] text-white">
+                            {product?.name || "Unknown"}
+                          </TableCell>
+                          <TableCell className="text-[13px] text-[#aaa]">
+                            {request.email}
+                          </TableCell>
+                          <TableCell className="text-[13px] text-[#888]">
+                            {new Date(request.timestamp).toLocaleDateString()}
+                          </TableCell>
                           <TableCell>
-                            <Badge className={`rounded-full text-[11px] font-semibold border ${
-                              product?.stock === 0
-                                ? "bg-[rgba(239,68,68,0.1)] text-red-400 border-[rgba(239,68,68,0.3)]"
-                                : "bg-[rgba(201,168,76,0.1)] text-gold border-[rgba(201,168,76,0.3)]"
-                            }`}>
+                            <Badge
+                              className={`rounded-full text-[11px] font-semibold border ${
+                                product?.stock === 0
+                                  ? "bg-[rgba(239,68,68,0.1)] text-red-400 border-[rgba(239,68,68,0.3)]"
+                                  : "bg-[rgba(201,168,76,0.1)] text-gold border-[rgba(201,168,76,0.3)]"
+                              }`}
+                            >
                               {product?.stock || 0}
                             </Badge>
                           </TableCell>
