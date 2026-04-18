@@ -13,6 +13,8 @@ import { useTheme } from "next-themes";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 import RabbitLogo from "@/assets/RabbitLogo";
+import { UserContext } from "@/context/UserContext";
+import { useContext } from "react";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
@@ -20,6 +22,7 @@ export default function Header() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const cartCount = getCartCount();
+  const { username } = useContext(UserContext);
 
   const navLinkBase =
     "text-[#888] text-[13px] tracking-[1px] uppercase py-1.5 px-[13px] rounded-md transition-all duration-[280ms] bg-transparent border-none cursor-pointer font-sans-app hover:text-gold hover:bg-[rgba(201,168,76,0.07)] whitespace-nowrap";
@@ -126,7 +129,7 @@ export default function Header() {
                   alt="Profile"
                 />
                 <AvatarFallback className="bg-[rgba(201,168,76,0.12)] text-gold font-serif-app font-bold text-sm">
-                  BT
+                  {username}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -140,10 +143,7 @@ export default function Header() {
             <DropdownMenuLabel className="font-normal py-3">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-semibold leading-none text-gold font-serif-app">
-                  Bhanu Thanneru
-                </p>
-                <p className="text-xs leading-none text-text-dim">
-                  bhanu@example.com
+                  {username}
                 </p>
               </div>
             </DropdownMenuLabel>
