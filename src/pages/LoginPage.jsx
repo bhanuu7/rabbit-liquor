@@ -32,20 +32,25 @@ export default function LoginPage() {
   const handleSignIn = useCallback(
     async (e) => {
       e.preventDefault();
-      if (!email || !password) return toast.error("Please fill in all fields");
+      if (!email || !password)
+        return toast.error("Please fill in all fields", {
+          position: "top-center",
+        });
 
       setIsLoading(true);
       try {
         const { isSignedIn } = await signIn({ username: email, password });
         if (isSignedIn) {
-          toast.success("Welcome back!");
+          toast.success("Welcome back!", { position: "top-center" });
           navigate("/home");
         }
       } catch (error) {
         if (error.name === "UserAlreadyAuthenticatedException") {
           navigate("/home");
         } else {
-          toast.error(error.message || "Login failed");
+          toast.error(error.message || "Login failed", {
+            position: "top-center",
+          });
         }
       } finally {
         setIsLoading(false);
@@ -58,7 +63,10 @@ export default function LoginPage() {
   const handleSignUp = useCallback(
     async (e) => {
       e.preventDefault();
-      if (!email || !password) return toast.error("Please fill in all fields");
+      if (!email || !password)
+        return toast.error("Please fill in all fields", {
+          position: "top-center",
+        });
 
       setIsLoading(true);
       try {
@@ -68,11 +76,15 @@ export default function LoginPage() {
           options: { userAttributes: { email }, autoSignIn: true },
         });
         if (nextStep.signUpStep === "CONFIRM_SIGN_UP") {
-          toast.success("Verification code sent to your email!");
+          toast.success("Verification code sent to your email!", {
+            position: "top-center",
+          });
           setView(VIEW.VERIFY);
         }
       } catch (error) {
-        toast.error(error.message || "Failed to sign up");
+        toast.error(error.message || "Failed to sign up", {
+          position: "top-center",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -84,20 +96,27 @@ export default function LoginPage() {
   const handleConfirmSignUp = useCallback(
     async (e) => {
       e.preventDefault();
-      if (!authCode) return toast.error("Please enter the verification code");
+      if (!authCode)
+        return toast.error("Please enter the verification code", {
+          position: "top-center",
+        });
 
       setIsLoading(true);
       try {
         await confirmSignUp({ username: email, confirmationCode: authCode });
-        toast.success("Account verified!");
+        toast.success("Account verified!", { position: "top-center" });
 
         const { isSignedIn } = await signIn({ username: email, password });
         if (isSignedIn) {
-          toast.success("Welcome to Rabbit Liquor!");
+          toast.success("Welcome to Rabbit Liquor!", {
+            position: "top-center",
+          });
           navigate("/home");
         }
       } catch (error) {
-        toast.error(error.message || "Verification failed");
+        toast.error(error.message || "Verification failed", {
+          position: "top-center",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -108,7 +127,8 @@ export default function LoginPage() {
   // ── Shared input styles ──────────────────────────────────────
   const inputClass =
     "h-11 rounded-lg border-gold/20 bg-white/[0.04] text-white placeholder:text-[#555] focus-visible:border-gold/60 focus-visible:ring-gold/15";
-  const labelClass = "text-[11px] font-semibold tracking-[1.5px] uppercase text-gold/70";
+  const labelClass =
+    "text-[11px] font-semibold tracking-[1.5px] uppercase text-gold/70";
 
   // ── Verification View ────────────────────────────────────────
   if (view === VIEW.VERIFY) {
@@ -141,7 +161,9 @@ export default function LoginPage() {
                   placeholder="000000"
                   maxLength={6}
                   value={authCode}
-                  onChange={(e) => setAuthCode(e.target.value.replace(/\D/g, ""))}
+                  onChange={(e) =>
+                    setAuthCode(e.target.value.replace(/\D/g, ""))
+                  }
                   className={`${inputClass} text-center text-2xl tracking-[0.75rem] font-bold h-14`}
                   required
                 />
@@ -191,7 +213,11 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-2 mb-5 bg-white/[0.04]">
               <TabsTrigger
                 value="signin"

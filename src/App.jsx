@@ -10,6 +10,7 @@ import { Amplify } from "aws-amplify";
 import AgeVerification from "./components/AgeVerification";
 import WhiskeySpinner from "./components/WhiskeySpinner";
 import { UserProvider } from "./context/UserContext";
+import { CustomersPage } from "./pages/Customers";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
@@ -63,6 +64,7 @@ function App() {
                       <Route path="/inventory" element={<Inventory />} />
                       <Route path="/cart" element={<CartPage />} />
                       <Route path="/orders" element={<OrdersPage />} />
+                      <Route path="/customers" element={<CustomersPage />} />
                     </Route>
                   </Routes>
                 </Suspense>

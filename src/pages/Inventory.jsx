@@ -139,7 +139,7 @@ export default function Inventory() {
 
   const handleUpdateStock = (productId, newStock) => {
     updateProductStock(productId, newStock);
-    toast.success("Stock updated successfully");
+    toast.success("Stock updated successfully", { position: "top-center" });
   };
 
   const handleEditProduct = (product) => {
@@ -157,23 +157,25 @@ export default function Inventory() {
       // updateProduct(editingProduct.id, res.product);
 
       setEditingProduct(null);
-      toast.success("Product updated successfully");
+      toast.success("Product updated successfully", { position: "top-center" });
     } catch (error) {
       console.error(error);
-      toast.error("Failed to update product");
+      toast.error("Failed to update product", { position: "top-center" });
     }
   };
 
   const handleDeleteProduct = (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       deleteProduct(productId);
-      toast.success("Product deleted");
+      toast.success("Product deleted", { position: "top-center" });
     }
   };
 
   const handleAddProduct = () => {
     if (!newProduct.name || !newProduct.category || !newProduct.price) {
-      toast.error("Please fill in all required fields");
+      toast.error("Please fill in all required fields", {
+        position: "top-center",
+      });
       return;
     }
     addProduct(newProduct);
@@ -189,7 +191,7 @@ export default function Inventory() {
       volume: "",
       origin: "",
     });
-    toast.success("Product added successfully");
+    toast.success("Product added successfully", { position: "top-center" });
   };
 
   const handleCloseOrderDetailsDialog = () => {

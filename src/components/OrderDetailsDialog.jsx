@@ -50,7 +50,7 @@ export const OrderDetailsDialog = ({ open, onClose, orderId }) => {
     );
   };
   const handleCancelOrder = (orderId) => {
-    toast.error("Cancelled Order");
+    toast.error("Cancelled Order", { position: "top-center" });
     mutate(orderId);
     onClose();
   };
@@ -76,7 +76,7 @@ export const OrderDetailsDialog = ({ open, onClose, orderId }) => {
         })
         .filter(Boolean),
     };
-    toast.success("Order completed succefully");
+    toast.success("Order completed succefully", { position: "top-center" });
     completeOrderFn({ orderId, payload });
     onClose();
   };

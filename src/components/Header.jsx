@@ -15,6 +15,8 @@ import { useCart } from "@/context/CartContext";
 import RabbitLogo from "@/assets/RabbitLogo";
 import { UserContext } from "@/context/UserContext";
 import { useContext } from "react";
+import { signOut } from "aws-amplify/auth";
+import { toast } from "sonner";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
@@ -23,6 +25,14 @@ export default function Header() {
   const { pathname } = useLocation();
   const cartCount = getCartCount();
   const { username } = useContext(UserContext);
+
+  const handleLogout = async () => {
+    await signOut();
+    toast.success("Logged out successfully", {
+      position: "top-center",
+    });
+    navigate("/");
+  };
 
   const navLinkBase =
     "text-[#888] text-[13px] tracking-[1px] uppercase py-1.5 px-[13px] rounded-md transition-all duration-[280ms] bg-transparent border-none cursor-pointer font-sans-app hover:text-gold hover:bg-[rgba(201,168,76,0.07)] whitespace-nowrap";
@@ -160,7 +170,10 @@ export default function Header() {
               Order History
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-[rgba(201,168,76,0.12)]" />
-            <DropdownMenuItem className="cursor-pointer text-red-500/80 focus:bg-red-500/10 focus:text-red-400">
+            <DropdownMenuItem
+              className="cursor-pointer text-red-500/80 focus:bg-red-500/10 focus:text-red-400"
+              onClick={handleLogout}
+            >
               <LogOut className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>

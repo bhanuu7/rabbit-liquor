@@ -138,6 +138,7 @@ function CartPage() {
     });
     toast.success("Reservation confirmed!", {
       description: `We've sent a confirmation email to ${formData.email}. Please pick up within 48 hours.`,
+      position: "top-center",
     });
     setFormData({ name: "", email: "", phone: "" });
     clearCart();
