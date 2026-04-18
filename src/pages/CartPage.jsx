@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
 import { useCart } from "../context/CartContext";
 import { useStore } from "../context/StoreContext";
@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Trash2, ShoppingCart, Package } from "lucide-react";
 import { reserveProduct } from "@/api/reserveProduct";
 import BottleSVG, { CATEGORY_FALLBACK } from "@/components/BottleSVG";
+import { UserContext } from "@/context/UserContext";
 
 function CartItem({ item, addToCart, removeFromCart }) {
   const [imgError, setImgError] = useState(false);
@@ -107,6 +108,7 @@ function CartItem({ item, addToCart, removeFromCart }) {
 function CartPage() {
   const navigate = useNavigate();
   const { mutate, isPending } = reserveProduct();
+  const { username } = useContext(UserContext);
   const { cartProducts, addToCart, removeFromCart, clearCart, getCartTotal } =
     useCart();
   const [checkoutOpen, setCheckoutOpen] = useState(false); // TO DO
@@ -120,8 +122,6 @@ function CartPage() {
   const tax = subtotal * 0.08;
   const total = subtotal + tax;
 
-  console.log("subtotal", subtotal, typeof subtotal);
-
   const handleCheckout = (e) => {
     e.preventDefault();
     const items = Object.values(cartProducts).map((item) => ({
@@ -129,11 +129,11 @@ function CartPage() {
       quantity: item.quantity,
     }));
     mutate({
-      user_name: "Bhanu",
-      email: formData.email,
-      phone: formData.phone,
-      customer_name: formData.name,
-      total_price: 2340,
+      user_name: username,
+      email: username + "@gmail.com",
+      //phone: formData.phone,
+      customer_name: username,
+      total_price: total,
       items,
     });
     toast.success("Reservation confirmed!", {
@@ -284,63 +284,6 @@ function CartPage() {
               onSubmit={handleCheckout}
               style={{ display: "flex", flexDirection: "column", gap: 16 }}
             >
-              <div className="flex flex-col gap-[7px]">
-                <label
-                  htmlFor="cp-name"
-                  className="text-[11px] tracking-[1.5px] uppercase text-[#888] font-[inherit]"
-                >
-                  Full Name
-                </label>
-                <input
-                  id="cp-name"
-                  required
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  placeholder="John Doe"
-                  className="bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-md py-[11px] px-3.5 text-[13px] text-text-main outline-none transition-all duration-[280ms] font-[inherit] placeholder:text-[#444] focus:border-gold focus:bg-[rgba(255,255,255,0.06)]"
-                />
-              </div>
-              <div className="flex flex-col gap-[7px]">
-                <label
-                  htmlFor="cp-email"
-                  className="text-[11px] tracking-[1.5px] uppercase text-[#888] font-[inherit]"
-                >
-                  Email
-                </label>
-                <input
-                  id="cp-email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  placeholder="john@example.com"
-                  className="bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-md py-[11px] px-3.5 text-[13px] text-text-main outline-none transition-all duration-[280ms] font-[inherit] placeholder:text-[#444] focus:border-gold focus:bg-[rgba(255,255,255,0.06)]"
-                />
-              </div>
-              <div className="flex flex-col gap-[7px]">
-                <label
-                  htmlFor="cp-phone"
-                  className="text-[11px] tracking-[1.5px] uppercase text-[#888] font-[inherit]"
-                >
-                  Phone Number
-                </label>
-                <input
-                  id="cp-phone"
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
-                  placeholder="(555) 123-4567"
-                  className="bg-[rgba(255,255,255,0.04)] border border-[rgba(201,168,76,0.22)] rounded-md py-[11px] px-3.5 text-[13px] text-text-main outline-none transition-all duration-[280ms] font-[inherit] placeholder:text-[#444] focus:border-gold focus:bg-[rgba(255,255,255,0.06)]"
-                />
-              </div>
-
               {/* Mini order summary */}
               <div className="bg-[rgba(201,168,76,0.04)] border border-[rgba(201,168,76,0.15)] rounded-lg p-4 flex flex-col gap-2">
                 <div className="flex justify-between text-[13px]">

@@ -9,6 +9,7 @@ import AppLayout from "./AppLayout";
 import { Amplify } from "aws-amplify";
 import AgeVerification from "./components/AgeVerification";
 import WhiskeySpinner from "./components/WhiskeySpinner";
+import { UserProvider } from "./context/UserContext";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
@@ -41,26 +42,28 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       {!ageVerified && <AgeVerification onConfirm={handleAgeConfirm} />}
-      <BrowserRouter>
-        <TooltipProvider>
-          <StoreProvider>
-            <CartProvider>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<LoginPage />} />
-                  <Route element={<AppLayout />}>
-                    <Route path="/home" element={<HomePage />} />
-                    <Route path="/products" element={<ProductsPage />} />
-                    <Route path="/inventory" element={<Inventory />} />
-                    <Route path="/cart" element={<CartPage />} />
-                    <Route path="/orders" element={<OrdersPage />} />
-                  </Route>
-                </Routes>
-              </Suspense>
-            </CartProvider>
-          </StoreProvider>
-        </TooltipProvider>
-      </BrowserRouter>
+      <UserProvider>
+        <BrowserRouter>
+          <TooltipProvider>
+            <StoreProvider>
+              <CartProvider>
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    <Route path="/" element={<LoginPage />} />
+                    <Route element={<AppLayout />}>
+                      <Route path="/home" element={<HomePage />} />
+                      <Route path="/products" element={<ProductsPage />} />
+                      <Route path="/inventory" element={<Inventory />} />
+                      <Route path="/cart" element={<CartPage />} />
+                      <Route path="/orders" element={<OrdersPage />} />
+                    </Route>
+                  </Routes>
+                </Suspense>
+              </CartProvider>
+            </StoreProvider>
+          </TooltipProvider>
+        </BrowserRouter>
+      </UserProvider>
     </QueryClientProvider>
   );
 }
