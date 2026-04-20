@@ -1021,7 +1021,7 @@ function TrendingCard({ product }) {
         </div>
         <div className="flex items-center justify-between">
           <span className="text-[19px] font-bold text-gold font-serif-app">
-            ${product.price.toFixed(2)}
+            ${Number(product.price).toFixed(2)}
           </span>
           {count === 0 ? (
             <button
@@ -1055,7 +1055,7 @@ function TrendingCard({ product }) {
   );
 }
 
-function TrendingSection() {
+function TrendingSection({ data }) {
   const scrollRef = useRef(null);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
@@ -1115,9 +1115,12 @@ function TrendingSection() {
           ref={scrollRef}
           onScroll={onScroll}
         >
-          {REAL_PRODUCTS.map((p) => (
-            <TrendingCard key={p.id} product={p} />
-          ))}
+          {data &&
+            data.map((p) => {
+              if (p.stock_count > 0) {
+                return <TrendingCard key={p.id} product={p} />;
+              }
+            })}
         </div>
         {canRight && (
           <button
@@ -1436,7 +1439,7 @@ export default function HomePage() {
         <main>
           <HeroSection />
           <RangeSection />
-          <TrendingSection />
+          <TrendingSection data={data} />
           <ReviewsSection />
         </main>
       )}
