@@ -11,8 +11,8 @@ export const UserProvider = ({ children }) => {
   async function fetchRole() {
     // Add this to see the raw error details
     try {
-     // const session = await fetchAuthSession();
-     // console.log(session);
+      // const session = await fetchAuthSession();
+      // console.log(session);
     } catch (error) {
       console.log("Error Name:", error.name);
       console.log("Error Message:", error.message);
@@ -31,7 +31,7 @@ export const UserProvider = ({ children }) => {
   }
   useEffect(() => {
     fetchUser();
-    fetchRole();
+    // fetchRole();
   }, []);
 
   return (

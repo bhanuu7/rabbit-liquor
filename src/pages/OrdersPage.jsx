@@ -202,8 +202,9 @@ export default function OrdersPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const { username } = useContext(UserContext);
   const { data = [], isLoading } = getOrdersOfUsers(username);
+  const orders = Array.isArray(data) ? data : data?.orders || [];
 
-  const filteredOrders = data.filter((o) => {
+  const filteredOrders = orders.filter((o) => {
     const matchFilter = activeFilter === "all" || o.status === activeFilter;
     const q = search.toLowerCase();
     const matchSearch =
@@ -217,44 +218,43 @@ export default function OrdersPage() {
     <div className="min-h-screen bg-bg-base text-text-main font-sans-app px-4 py-8 max-w-3xl mx-auto">
       {/* Page title */}
       <div className="mb-6">
-        <p className="text-[10px] tracking-[4px] uppercase text-gold opacity-80 mb-1">
-          Account
-        </p>
         <h1 className="text-[clamp(22px,3vw,30px)] font-bold text-white font-serif-app leading-tight">
           Your <em className="text-gold italic">Orders</em>
         </h1>
         <p className="text-[13px] text-[#555] mt-1">
-          {data.length} orders placed
+          {orders.length} orders placed
         </p>
       </div>
 
       {/* Filter pills + Search */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-0.5">
-          {FILTERS.map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => setActiveFilter(key)}
-              className={`shrink-0 px-3.5 py-1.5 rounded-full text-[12px] font-semibold border transition-all duration-[220ms] cursor-pointer ${
-                activeFilter === key
-                  ? "bg-gold text-black border-gold"
-                  : "bg-transparent text-[#666] border-[rgba(201,168,76,0.2)] hover:text-gold hover:border-[rgba(201,168,76,0.45)]"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+      {filteredOrders.length > 0 && (
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-0.5">
+            {FILTERS.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setActiveFilter(key)}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-[12px] font-semibold border transition-all duration-[220ms] cursor-pointer ${
+                  activeFilter === key
+                    ? "bg-gold text-black border-gold"
+                    : "bg-transparent text-[#666] border-[rgba(201,168,76,0.2)] hover:text-gold hover:border-[rgba(201,168,76,0.45)]"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="relative sm:ml-auto min-w-0 sm:min-w-[220px]">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gold pointer-events-none w-3.5 h-3.5" />
+            <Input
+              placeholder="Search by order or item…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="bg-[rgba(255,255,255,0.04)] border-[rgba(201,168,76,0.22)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px] pl-9 rounded-full placeholder:text-text-dim h-9"
+            />
+          </div>
         </div>
-        <div className="relative sm:ml-auto min-w-0 sm:min-w-[220px]">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gold pointer-events-none w-3.5 h-3.5" />
-          <Input
-            placeholder="Search by order or item…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="bg-[rgba(255,255,255,0.04)] border-[rgba(201,168,76,0.22)] text-white focus-visible:ring-0 focus-visible:border-gold text-[13px] pl-9 rounded-full placeholder:text-text-dim h-9"
-          />
-        </div>
-      </div>
+      )}
 
       {/* Order cards */}
       {filteredOrders.length > 0 ? (
